@@ -1,0 +1,27 @@
+version: '1'
+services:
+  app:
+    build: ./app
+    image: app
+    ports:
+      - "5000:5000"
+    networks:
+      - mynetwork
+    volumes:
+      - ./app:/app
+    environment:
+      - FLASK_ENV=development
+  model-service:
+    build: ./model-service
+    image: model-service
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+    volumes:
+      - ./model-service/model_service:/model-service/model_service
+    environment:
+      - FLASK_ENV=development
+networks:
+  mynetwork:
+    driver: bridge
