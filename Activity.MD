@@ -32,5 +32,9 @@ Approved PR:
   - https://github.com/remla24-team10/app/pull/2
 
 -- Jan van der Meulen --
-Created PR: 
-Approved PR: 
+- Created PR: 
+  - https://github.com/remla24-team10/app/pull/1
+  - https://github.com/remla24-team10/app/pull/2
+  - https://github.com/remla24-team10/lib-version/pull/1
+- Approved PR:
+  - https://github.com/remla24-team10/operation/pull/1  
