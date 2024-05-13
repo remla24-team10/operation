@@ -85,7 +85,7 @@ This is a automatically versioned library that can be asked for its own library.
 ### Task 3: Model-service
 Pull requests: https://github.com/remla24-team10/model-service/pull/1
 Contributor: Michael Chan
-Reviewer: 
+Reviewer: Remi Lejeune
 We used Flask to serve the model, the model itself is stored on gdrive and its downloaded at runtime.
 
 ### Task 4: Lib-ML 
