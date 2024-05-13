@@ -73,10 +73,12 @@ Bandit warning B106 about potential hardcoded access tokens has been suppressed 
 ### Task 1: App
 Pull requests: https://github.com/remla24-team10/app/pull/1 and https://github.com/remla24-team10/app/pull/2 
 Contributor: Jan van der Meulen
+Reviewer: Remi Lejeune
 We used Flask to create a simple web-app which imports the version-library and prompts the model-service for the result of a prediction. 
 
 ### Task 2: Lib-version
 Pull requests: https://github.com/remla24-team10/lib-version/pull/1
 Contributor: Jan van der Meulen
+Reviewer: Shayan Ramezani
 This is a automatically versioned library that can be asked for its own library. It updates the version number by automatically pulling the value from its own git tag. 
 
