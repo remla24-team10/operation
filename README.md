@@ -83,22 +83,25 @@ Reviewer: Shayan Ramezani
 This is a automatically versioned library that can be asked for its own library. It updates the version number by automatically pulling the value from its own git tag. 
 
 ### Task 3: Model-service
+Pull requests: https://github.com/remla24-team10/model-service/pull/1
 Contributor: Michael Chan
-
+Reviewer: 
 We used Flask to serve the model, the model itself is stored on gdrive and its downloaded at runtime.
 
 ### Task 4: Lib-ML 
+Pull requests: https://github.com/remla24-team10/lib-ml/pull/7 and https://github.com/remla24-team10/lib-ml/pull/9
 Contributor: Shayan Ramezani, Michael Chan
 Reviewer: Michael Chan, Shayan Ramezani
 This library provides several functions related to the processing of data. It is published on Pypi and has a workflow setup with github actions.
 
 ### Task 5: Model-training
+Pull requests: https://github.com/remla24-team10/model-training/pull/2
 Contributor: Shayan Ramezani 
 Reviewer: Jan van der Meulen
 Model training trains the model and stores all related files to drive via DVC. It was refactored in A2.
 
-
 ### Task 6: Operation
+Pull requests: https://github.com/remla24-team10/operation/pull/1
 Contributor: Remi Lejeune
 Reviewer: Jan van der Meulen
 
