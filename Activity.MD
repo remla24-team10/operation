@@ -14,3 +14,23 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/3
 -- Jan van der Meulen --
 Created PR: https://github.com/janvandermeulen/REMLA-group10/pull/1
 Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
+
+
+# A2:
+-- Shayan Ramezani --
+Created PR: 
+Approved PR: 
+
+-- Michael Chan --
+Created PR: 
+Approved PR: 
+
+-- Remi Lejeune --
+- Created PR: https://github.com/remla24-team10/operation/pull/1
+- Approved PR: 
+  - https://github.com/remla24-team10/app/pull/1 
+  - https://github.com/remla24-team10/app/pull/2
+
+-- Jan van der Meulen --
+Created PR: 
+Approved PR: 
