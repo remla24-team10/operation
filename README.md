@@ -21,16 +21,19 @@ git clone https://github.com/remla24-team10/model-service.git
 ```
 git clone https://github.com/remla24-team10/app.git
 ```
+```
+docker-compose build
+```
+
 
 ```
 docker-compose up -d
 ```
 
-You can then access the wep app via: [localhost](http://localhost:5000/)
+You can then access the wep app via: [localhost](http://localhost:5000/) (if there is some issues try to open it in incognito)
 
 [//]: # (# This README should introduce your highlevel architecture and that links to the corresponding repositories, so visitors can easily understand your project and find all relevant information. )
 
-operation: https://github.com/janvandermeulen/REMLA-group10 
 
 ## Comments for A1
 ### Task 1: Organise your training pipeline following machine learning project best practices.

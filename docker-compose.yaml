@@ -9,6 +9,8 @@ services:
       - mynetwork
     volumes:
       - ./app:/app
+    environment:
+      - FLASK_ENV=development
   model-service:
     build: ./model-service
     image: model-service
@@ -18,6 +20,8 @@ services:
       - mynetwork
     volumes:
       - ./model-service/model_service:/model-service/model_service
+    environment:
+      - FLASK_ENV=development
 networks:
   mynetwork:
     driver: bridge
