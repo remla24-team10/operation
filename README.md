@@ -82,3 +82,17 @@ Contributor: Jan van der Meulen
 Reviewer: Shayan Ramezani
 This is a automatically versioned library that can be asked for its own library. It updates the version number by automatically pulling the value from its own git tag. 
 
+### Task 3: Model-service
+
+### Task 4: Lib-ML 
+
+### Task 5: Model-training 
+
+
+### Task 6: Operation
+
+
+A docker compose file was created, which allow the app to be run easily. It creates two docker containers that communicate between eachother, a few other features were implemented namely: volume mapping, a port mapping, and
+an environment variable.
+
+The README file contains the architecture, installations and comments for each assignments.
