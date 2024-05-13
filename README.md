@@ -83,14 +83,24 @@ Reviewer: Shayan Ramezani
 This is a automatically versioned library that can be asked for its own library. It updates the version number by automatically pulling the value from its own git tag. 
 
 ### Task 3: Model-service
+Contributor: Michael Chan
+
+We used Flask to serve the model, the model itself is stored on gdrive and its downloaded at runtime.
 
 ### Task 4: Lib-ML 
+Contributor: Shayan Ramezani, Michael Chan
+Reviewer: Michael Chan, Shayan Ramezani
+This library provides several functions related to the processing of data. It is published on Pypi and has a workflow setup with github actions.
 
-### Task 5: Model-training 
+### Task 5: Model-training
+Contributor: Shayan Ramezani 
+Reviewer: Jan van der Meulen
+Model training trains the model and stores all related files to drive via DVC. It was refactored in A2.
 
 
 ### Task 6: Operation
-
+Contributor: Remi Lejeune
+Reviewer: Jan van der Meulen
 
 A docker compose file was created, which allow the app to be run easily. It creates two docker containers that communicate between eachother, a few other features were implemented namely: volume mapping, a port mapping, and
 an environment variable.
