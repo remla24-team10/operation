@@ -1,13 +1,13 @@
 version: '1'
 services:
-  web:
+  app:
     build: ./app
     image: app
     ports:
       - "5000:5000"
     networks:
       - mynetwork
-  api:
+  model-service:
     build: ./model-service
     image: model-service
     ports:
