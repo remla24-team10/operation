@@ -1,5 +1,3 @@
-# &lt;clipboard-copy&gt; element
-
 # Operation
 
 ## Architecture

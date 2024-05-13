@@ -1,0 +1,18 @@
+version: '1'
+services:
+  web:
+    build: ./app
+    image: app
+    command: docker run -p 5000:5000 app
+    networks:
+      - mynetwork
+  api:
+    build: ./model-service
+    image: model-service
+    command: docker run -p 80:80 model-service
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
