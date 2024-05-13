@@ -101,7 +101,7 @@ Reviewer: Jan van der Meulen
 Model training trains the model and stores all related files to drive via DVC. It was refactored in A2.
 
 ### Task 6: Operation
-Pull requests: https://github.com/remla24-team10/operation/pull/1
+Pull request: https://github.com/remla24-team10/operation/pull/1
 Contributor: Remi Lejeune
 Reviewer: Jan van der Meulen
 
