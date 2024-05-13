@@ -7,6 +7,8 @@ services:
       - "5000:5000"
     networks:
       - mynetwork
+    volumes:
+      - ./app:/app
   model-service:
     build: ./model-service
     image: model-service
@@ -14,7 +16,8 @@ services:
       - "8080:8080"
     networks:
       - mynetwork
-
+    volumes:
+      - ./model-service/model_service:/model-service/model_service
 networks:
   mynetwork:
     driver: bridge
