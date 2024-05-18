@@ -1,0 +1,23 @@
+---
+- name: Provision Kubernetes Worker
+  hosts: worker
+  become: true
+  tasks:
+    # Your existing tasks here...
+
+    - name: Install Minikube dependencies
+      apt:
+        name: 
+          - conntrack
+          - curl
+
+    - name: Download Minikube binary
+      get_url:
+        url: "https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64"
+        dest: "/usr/local/bin/minikube"
+        mode: "0755"
+
+    # - name: Install kubectl
+    #   apt:
+    #     name: kubectl
+    #     state: present
