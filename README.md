@@ -24,9 +24,12 @@ git clone https://github.com/remla24-team10/app.git
 ```
 vagrant up
 ```
-
-You can then access the wep app via: [localhost](http://localhost:5000/) (if there is some issues try to open it in incognito)
-
+To access the machines use the following commands:
+```
+vagrant ssh controller
+vagrant ssh worker1 
+vagrant ssh worker2
+```
 [//]: # (# This README should introduce your highlevel architecture and that links to the corresponding repositories, so visitors can easily understand your project and find all relevant information. )
 
 
