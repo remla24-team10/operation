@@ -1,6 +1,7 @@
 # Operation
 
 This is the main repository of [remla24-team10](https://github.com/remla24-team10)
+The README file contains the architecture, installations and comments for each assignments.
 
 ## Architecture
 - [app](https://github.com/remla24-team10/app) is the application that communicates with model-service and depends on lib-version 
@@ -108,4 +109,30 @@ Reviewer: Jan van der Meulen
 A docker compose file was created, which allow the app to be run easily. It creates two docker containers that communicate between eachother, a few other features were implemented namely: volume mapping, a port mapping, and
 an environment variable.
 
-The README file contains the architecture, installations and comments for each assignments.
+
+## Comments for A3 
+
+### Task 1: Setting up Virtual Infrastructure
+Pull request: https://github.com/remla24-team10/operation/pull/3
+Contributor: Jan van der Meulen
+Reviewer: 
+
+- We used Vagrant to create multiple virtual machines that run the app. After running ```vagrant up``` these can be accessed with the command ```vagrant ssh controller1```, ```vagrant ssh worker1``` and ```vagrant ssh worker2``` respectively.
+- TODO: A non-trivial ansible script was created to install all the necessary software on the virtual machines.
+- TODO: Each VM has a private network and can communicate directly with all other VMs. This can be tested by: 
+- The Vagrantfile uses a loop and template arithmetics to create the VMs. As seen in the definition of the workers which can easily be scaled up to spawn as many workers as necessary. 
+### Task 2: Setting up Software Environment
+Pull request: 
+Contributor: Shayan Ramezani and Remi Lejeune
+Reviewer:
+
+### Task 3: App Monitoring
+Pull request:
+Contributor: Michael Chan
+Reviewer: 
+
+### Task 4: Grafana 
+Pull request: 
+Contributor: Michael Chan
+Reviewer:
+
