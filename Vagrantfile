@@ -1,6 +1,11 @@
-Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/bionic64"
+config_version = "2" # Version of the Vagrant configuration format
 
+num_workers = 2 # Number of worker nodes
+system("python generate_inventory.py #{num_workers} > ansible/inventory.cfg")
+
+Vagrant.configure(config_version) do |config|  
+  
+  config.vm.box = "ubuntu/bionic64"
   # Create a private network for communication between VMs
   config.vm.network "private_network", type: "dhcp"
 
@@ -19,7 +24,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Define workers
-  (1..2).each do |i|
+  (1..num_workers).each do |i|
     config.vm.define "worker#{i}" do |worker|
       worker.vm.hostname = "worker#{i}"
       worker.vm.network "private_network", ip: "192.168.56.#{i+10}"

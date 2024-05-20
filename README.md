@@ -12,7 +12,7 @@ This is the main repository of [remla24-team10](https://github.com/remla24-team1
 
 ## Installation
 
-In this repository run the following commands, make sure you have installed Ansible, Vagrant and Docker-Compose on your machine.:
+In this repository run the following commands, make sure you have installed Python, Ansible, Vagrant and Docker-Compose on your machine.:
 
 ```
 git clone https://github.com/remla24-team10/model-service.git
