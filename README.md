@@ -12,7 +12,7 @@ This is the main repository of [remla24-team10](https://github.com/remla24-team1
 
 ## Installation
 
-In this repository run the following commands:
+In this repository run the following commands, make sure you have installed Python, Ansible, Vagrant and Docker-Compose on your machine.:
 
 ```
 git clone https://github.com/remla24-team10/model-service.git
@@ -22,16 +22,14 @@ git clone https://github.com/remla24-team10/model-service.git
 git clone https://github.com/remla24-team10/app.git
 ```
 ```
-docker-compose build
+vagrant up
 ```
-
-
+To access the machines use the following commands:
 ```
-docker-compose up -d
+vagrant ssh controller
+vagrant ssh worker1 
+vagrant ssh worker2
 ```
-
-You can then access the wep app via: [localhost](http://localhost:5000/) (if there is some issues try to open it in incognito)
-
 [//]: # (# This README should introduce your highlevel architecture and that links to the corresponding repositories, so visitors can easily understand your project and find all relevant information. )
 
 
