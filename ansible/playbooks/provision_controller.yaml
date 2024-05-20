@@ -1,0 +1,47 @@
+# ---
+# - name: Provision Kubernetes Controller
+#   hosts: controller
+#   become: true
+#   tasks:
+#     - name: Start Minikube cluster
+#       shell: minikube start --driver=virtualbox
+
+#     - name: Enable Minikube addons
+#       shell: |
+#         minikube addons enable metrics-server
+#         minikube addons enable ingress
+# 
+---
+- name: Provision Kubernetes Controller
+  hosts: controller
+  become: true
+  vars:
+    pod_network_cidr: "10.244.0.0/16"
+
+  tasks:
+    - name: Initialize Kubernetes master
+      command: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
+      register: kubeadm_init
+      changed_when: "'This node has joined the cluster' not in kubeadm_init.stdout"
+
+    - name: Create kubeconfig directory
+      file:
+        path: "/root/.kube"
+        state: directory
+        mode: 0755
+
+    - name: Copy admin.conf to kubeconfig
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /root/.kube/config
+        remote_src: yes
+
+    - name: Install Flannel network plugin
+      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      args:
+        creates: /etc/cni/net.d/10-flannel.conflist
+
+    - name: Save join command
+      shell: kubeadm token create --print-join-command > /root/join_command
+      register: join_command
+

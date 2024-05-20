@@ -1,0 +1,17 @@
+---
+- name: Configure kubectl on host
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Fetch kubeconfig from Minikube
+      fetch:
+        src: "/etc/kubernetes/admin.conf"
+        dest: "~/.kube/config"
+        flat: yes
+
+    - name: Set KUBECONFIG environment variable on host
+      lineinfile:
+        path: "~/.bashrc"
+        line: 'export KUBECONFIG="$HOME/.kube/config"'
+        create: yes

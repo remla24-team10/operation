@@ -1,0 +1,15 @@
+---
+- name: Update /etc/hosts with Minikube IP
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Get Minikube IP
+      command: minikube ip
+      register: minikube_ip
+      changed_when: false
+
+    - name: Add entries to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ minikube_ip.stdout }} prometheus.local grafana.local dashboard.local"
+        state: present
