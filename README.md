@@ -122,7 +122,7 @@ Reviewer:
 - Each VM has a private network and can communicate directly with all other VMs. This can be tested by first ssh-ing into any of the machines. Then running pining another machine. E.g. 
   - ```vagrant ssh controller1```
   - ```ping 192.168.57.11``` to ping worker1.
-- The Vagrantfile uses a loop and template arithmetics to create the VMs. As seen in the definition of the workers which can easily be scaled up to spawn as many workers as necessary. 
+- The Vagrantfile uses a loop and template arithmetics to create the VMs. As seen in the definition of the workers which can easily be scaled up to spawn as many workers as necessary. This is done by using the Python file: generate_inventory.py which generates the inventory for Ansible based on the amount of workers defined in the Vagrantfile. And, some simple looping in the Vagrantfile to create the workers.
 ### Task 2: Setting up Software Environment
 Pull request: 
 Contributor: Shayan Ramezani and Remi Lejeune
