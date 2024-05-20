@@ -118,8 +118,10 @@ Contributor: Jan van der Meulen
 Reviewer: 
 
 - We used Vagrant to create multiple virtual machines that run the app. After running ```vagrant up``` these can be accessed with the command ```vagrant ssh controller1```, ```vagrant ssh worker1``` and ```vagrant ssh worker2``` respectively.
-- TODO: A non-trivial ansible script was created to install all the necessary software on the virtual machines.
-- TODO: Each VM has a private network and can communicate directly with all other VMs. This can be tested by: 
+- A non-trivial ansible script was created to install all the necessary software on the virtual machines. This can be found in ```ansible/playbook-controller.yml``` and ```ansible/playbook-worker.yml```.
+- Each VM has a private network and can communicate directly with all other VMs. This can be tested by first ssh-ing into any of the machines. Then running pining another machine. E.g. 
+  - ```vagrant ssh controller1```
+  - ```ping 192.168.57.11``` to ping worker1.
 - The Vagrantfile uses a loop and template arithmetics to create the VMs. As seen in the definition of the workers which can easily be scaled up to spawn as many workers as necessary. 
 ### Task 2: Setting up Software Environment
 Pull request: 
