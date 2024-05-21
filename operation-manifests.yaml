@@ -40,6 +40,9 @@ spec:
   ports:
   - port: 5000
     targetPort: 5000
+  type: NodePort
+status:
+  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
