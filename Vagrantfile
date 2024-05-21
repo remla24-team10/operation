@@ -20,13 +20,10 @@ Vagrant.configure(config_version) do |config|
     controller.vm.network "private_network", ip: "192.168.56.4"
     controller.vm.provider "virtualbox" do |vb|
       vb.memory = "4000"
-      vb.cpus = 1
+      vb.cpus = 2
     end
     controller.vm.provision "ansible" do |ansible|
-      ansible.playbooks = [
-        "ansible/playbooks/install_dependencies.yaml",
-        "ansible/playbooks/provision_controller.yaml"
-      ]
+      ansible.playbook = "ansible/playbooks/provision_controller.yaml"
       ansible.inventory_path = "ansible/inventory.cfg"
     end
   end
@@ -41,10 +38,7 @@ Vagrant.configure(config_version) do |config|
         vb.cpus = 1
       end
       worker.vm.provision "ansible" do |ansible|
-        ansible.playbooks = [
-          "ansible/playbooks/install_dependencies.yaml",
-          "ansible/playbooks/provision_worker.yaml"
-        ]
+        ansible.playbook = "ansible/playbooks/provision_worker.yaml"
         ansible.inventory_path = "ansible/inventory.cfg"
       end
     end
