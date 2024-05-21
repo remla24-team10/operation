@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: remilejeune/app
+        image: michaelchan20/flask_app:latest
         ports:
         - containerPort: 5000
         env:
@@ -34,11 +34,14 @@ kind: Service
 metadata:
   name: app-service
   namespace: operation
+  labels:
+    app: app-serv
 spec:
   selector:
     app: app
   ports:
-  - port: 5000
+  - name: appport
+    port: 5000
     targetPort: 5000
   type: NodePort
 status:
@@ -63,7 +66,7 @@ spec:
     spec:
       containers:
       - name: model-service
-        image: remilejeune/model-service
+        image: michaelchan20/flask_service:latest
         ports:
         - containerPort: 8080
         env:
@@ -93,4 +96,18 @@ spec:
       name: app-service
       port:
         number: 5000
-
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-monitor
+  namespace: operation
+  labels:
+    release: myprom
+spec:
+  selector:
+    matchLabels:
+      app: app-serv
+  endpoints:
+  - interval: 1s
+    port: appport
