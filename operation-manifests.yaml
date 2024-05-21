@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: michaelchan20/flask_app:latest
+        image: remilejeune/app
         ports:
         - containerPort: 5000
         env:
@@ -60,7 +60,7 @@ spec:
     spec:
       containers:
       - name: model-service
-        image: michaelchan20/flask_service:latest
+        image: remilejeune/model-service
         ports:
         - containerPort: 8080
         env:
@@ -78,4 +78,16 @@ spec:
   ports:
   - port: 8080
     targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: operation
+spec:
+  defaultBackend:
+    service:
+      name: app-service
+      port:
+        number: 5000
 
