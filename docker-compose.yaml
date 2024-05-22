@@ -1,19 +1,18 @@
 version: '1'
 services:
   app:
-    build: ./app
-    image: app
+    image: ghcr.io/remla24-team10/app:latest
+    container_name: app
     ports:
       - "5000:5000"
     networks:
       - mynetwork
-    volumes:
-      - ./app:/app
+
     environment:
       - FLASK_ENV=development
   model-service:
-    build: ./model-service
-    image: model-service
+    image: ghcr.io/remla24-team10/model-service:latest
+    container_name: model-service
     ports:
       - "8080:8080"
     networks:

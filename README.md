@@ -13,7 +13,9 @@ The README file contains the architecture, installations and comments for each a
 
 ## Installation
 
-In this repository run the following commands:
+### With Vagrant
+
+In this repository run the following commands, make sure you have installed Python, Ansible, Vagrant and Docker-Compose on your machine.:
 
 ```
 git clone https://github.com/remla24-team10/model-service.git
@@ -23,15 +25,20 @@ git clone https://github.com/remla24-team10/model-service.git
 git clone https://github.com/remla24-team10/app.git
 ```
 ```
-docker-compose build
+vagrant up
 ```
-
-
+To access the machines use the following commands:
 ```
-docker-compose up -d
+vagrant ssh controller
+vagrant ssh worker1 
+vagrant ssh worker2
 ```
+### With docker compose
 
-You can then access the wep app via: [localhost](http://localhost:5000/) (if there is some issues try to open it in incognito)
+Run docker-compose
+```
+docker compose up
+```
 
 [//]: # (# This README should introduce your highlevel architecture and that links to the corresponding repositories, so visitors can easily understand your project and find all relevant information. )
 
