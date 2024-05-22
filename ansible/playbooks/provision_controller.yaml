@@ -1,7 +1,7 @@
 ---
 - name: Provision Kubernetes Controller
   hosts: controller
-  become: true
+  # become: true
   vars:
     pod_network_cidr: "10.244.0.0/16"
     minikube_version: "latest"
@@ -11,18 +11,43 @@
 # Install Minikube dependencies
   tasks:
     - name: Install dependencies
+      become: true
       apt:
         name: 
           - curl
-          - apt-transport-https
-          - docker.io
           - conntrack
-          - socat
-          - ebtables
         state: present
         update_cache: yes
 
+    - name: Add Docker's official GPG key
+      become: true
+      shell: |
+        apt-get update
+        apt-get install ca-certificates curl
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+          $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+          tee /etc/apt/sources.list.d/docker.list > /dev/null
+        apt-get update
+
+    - name: install docker
+      become: true
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+# Set up minikube
     - name: Install kubectl
+      become: true
       get_url:
         url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
         dest: "/usr/local/bin/kubectl"
@@ -30,48 +55,30 @@
       when: kubectl_version != ""
 
     - name: Install Minikube
+      become: true
       get_url:
         url: "https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube-linux-amd64"
         dest: "/usr/local/bin/minikube"
         mode: '0755'
       when: minikube_version != ""
     
-    # - name: Install crictl
-    #   get_url:
-    #     url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ crictl_version }}/crictl-{{ crictl_version }}-darwin-arm64.tar.gz"
-    #     dest: "/usr/local/bin/crictl"
-    #     mode: '0755'
+    - name: Add user to the Docker group
+      become: true
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
     
-    - name: Get Kubeadm
-      command: sudo snap install kubeadm --classic
-      
-    - name: Get Kubelet
-      command: sudo snap install kubelet --classic
 
-# Provision Controller
-    - name: Initialize Kubernetes master
-      command: sudo kubeadm init --pod-network-cidr={{ pod_network_cidr }}
-      register: kubeadm_init
-      changed_when: "'This node has joined the cluster' not in kubeadm_init.stdout"
+    - name: Reboot the machine
+      become: true
+      reboot:
+        msg: "Reboot initiated by Ansible for updates"
+    # - name: Add user to the Docker group and apply the new group membership
+    #   shell: sudo usermod -aG docker $USER && newgrp docker
 
-    - name: Create kubeconfig directory
-      file:
-        path: "/root/.kube"
-        state: directory
-        mode: 0755
+    - name: Start Minikube
+      shell: minikube start --driver=docker  
 
-    - name: Copy admin.conf to kubeconfig
-      copy:
-        src: /etc/kubernetes/admin.conf
-        dest: /root/.kube/config
-        remote_src: yes
-
-    - name: Install Flannel network plugin
-      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-      args:
-        creates: /etc/cni/net.d/10-flannel.conflist
-
-    - name: Save join command
-      shell: kubeadm token create --print-join-command > /root/join_command
-      register: join_command
-
+    - name: Enable Ingress in Minikub
+      shell: minikube addons enable ingress

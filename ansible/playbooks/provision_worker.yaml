@@ -1,25 +1,53 @@
 ---
-- name: Provision Kubernetes Worker Nodes
-  hosts: workers
-  become: true
+- name: Provision Kubernetes Worker
+  hosts: worker
+  # become: true
   vars:
+    pod_network_cidr: "10.244.0.0/16"
     minikube_version: "latest"
     kubectl_version: "v1.30.1"
-# Install dependencies
+    crictl_version: "v1.30.0"
+
+# Install Minikube dependencies
   tasks:
     - name: Install dependencies
+      become: true
       apt:
         name: 
           - curl
-          - apt-transport-https
-          - docker.io
           - conntrack
-          - socat
-          - ebtables
         state: present
         update_cache: yes
 
+    - name: Add Docker's official GPG key
+      become: true
+      shell: |
+        apt-get update
+        apt-get install ca-certificates curl
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+          $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+          tee /etc/apt/sources.list.d/docker.list > /dev/null
+        apt-get update
+
+    - name: install docker
+      become: true
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+# Set up minikube
     - name: Install kubectl
+      become: true
       get_url:
         url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
         dest: "/usr/local/bin/kubectl"
@@ -27,19 +55,43 @@
       when: kubectl_version != ""
 
     - name: Install Minikube
+      become: true
       get_url:
         url: "https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube-linux-amd64"
         dest: "/usr/local/bin/minikube"
         mode: '0755'
       when: minikube_version != ""
-# Provision worker
-    - name: Copy join command from controller
-      fetch:
-        src: /root/join_command
-        dest: /tmp/join_command
-        flat: yes
+    
+    - name: Add user to the Docker group
+      become: true
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+    
 
-    - name: Join the cluster
-      command: "{{ lookup('file', '/tmp/join_command') }}"
-      register: join_cluster
-      changed_when: "'This node has joined the cluster' not in join_cluster.stdout"
+    - name: Reboot the machine
+      become: true
+      reboot:
+        msg: "Reboot initiated by Ansible for updates"
+    # - name: Add user to the Docker group and apply the new group membership
+    #   shell: sudo usermod -aG docker $USER && newgrp docker
+
+    # - name: Start Minikube
+    #   shell: minikube start --driver=docker  
+
+    # - name: Enable Ingress in Minikub
+    #   shell: minikube addons enable ingress
+
+    # - name: Copy join command from controller
+    #     fetch:
+    #       src: /root/join_command
+    #       dest: /tmp/join_command
+    #       flat: yes
+    #     delegate_to: controller1
+
+    # - name: Join the cluster
+    #   command: "{{ lookup('file', '/tmp/join_command') }}"
+    #   register: join_cluster
+    #   changed_when: "'This node has joined the cluster' not in join_cluster.stdout"
+    #   when: "'This node has joined the cluster' not in join_cluster.stdout"
