@@ -33,13 +33,8 @@ vagrant ssh worker1
 vagrant ssh worker2
 ```
 ### With docker compose
-1. Login to GitHub Package Registry:
-```
-docker login ghcr.io
-```
-To login, you need a [personal token](https://github.com/settings/tokens/new) that has read:package
 
-2. Run docker-compose
+Run docker-compose
 ```
 docker compose up
 ```
