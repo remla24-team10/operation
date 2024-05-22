@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: michaelchan20/flask_app:latest
+        image: ghcr.io/remla24-team10/app:latest
         ports:
         - containerPort: 5000
         env:
@@ -66,7 +66,7 @@ spec:
     spec:
       containers:
       - name: model-service
-        image: michaelchan20/flask_service:latest
+        image: ghcr.io/remla24-team10/model-service:latest
         ports:
         - containerPort: 8080
         env:
@@ -109,5 +109,5 @@ spec:
     matchLabels:
       app: app-serv
   endpoints:
-  - interval: 1s
+  - interval: 10s
     port: appport
