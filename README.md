@@ -1,6 +1,7 @@
 # Operation
 
 This is the main repository of [remla24-team10](https://github.com/remla24-team10)
+The README file contains the architecture, installations and comments for each assignments.
 
 ## Architecture
 - [app](https://github.com/remla24-team10/app) is the application that communicates with model-service and depends on lib-version 
@@ -12,17 +13,10 @@ This is the main repository of [remla24-team10](https://github.com/remla24-team1
 
 ## Installation
 
+The project can be ran using either docker compose or kubernetes (minikube). Vagrant currently creates VM's with some basic ansible playbooks but it currently is not functional yet.
+
 ### With Vagrant
-
-In this repository run the following commands, make sure you have installed Python, Ansible, Vagrant and Docker-Compose on your machine.:
-
-```
-git clone https://github.com/remla24-team10/model-service.git
-```
-
-```
-git clone https://github.com/remla24-team10/app.git
-```
+Th VM's can be set up by running:
 ```
 vagrant up
 ```
@@ -32,12 +26,49 @@ vagrant ssh controller
 vagrant ssh worker1 
 vagrant ssh worker2
 ```
-### With docker compose
 
-Run docker-compose
+### With docker compose
+Run docker-compose:
 ```
 docker compose up
 ```
+The front-end application should now be available at localhost:5000.
+### With kubernetes (minikube)
+To run the project using minikube run the following commands:
+Run:
+```
+minikube start
+minikube addons enable ingress
+kubectl apply -f operation-manifests.yaml
+minikube tunnel
+```
+The project should now be available at localhost (no port) through ingress.
+
+### prometheus
+The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
+Additionally the prometheus stack should be installed through helm:
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install myprom prom-repo/kube-prometheus-stack
+```
+Afterwards the prometheus dashboard can be ran using:
+```
+minikube service myprom-kube-prometheus-sta-prometheus --url
+```
+
+### grafana
+Grafana can also be used for further visualisation of the metrics, to run grafana prometheus should be active.
+Run:
+```
+minikube service myprom-grafana --url
+```
+Afterwards login to the dashboard using the default credentials:
+```
+admin
+prom-operator
+```
+The dashboard can now be imported by navigating to dashboards and importing the grafana.json file provided in the repository.
+
 
 [//]: # (# This README should introduce your highlevel architecture and that links to the corresponding repositories, so visitors can easily understand your project and find all relevant information. )
 
@@ -115,4 +146,37 @@ Reviewer: Jan van der Meulen
 A docker compose file was created, which allow the app to be run easily. It creates two docker containers that communicate between eachother, a few other features were implemented namely: volume mapping, a port mapping, and
 an environment variable.
 
-The README file contains the architecture, installations and comments for each assignments.
+
+## Comments for A3 
+
+### Task 1: Setting up Virtual Infrastructure
+Pull request: https://github.com/remla24-team10/operation/pull/3
+Contributor: Jan van der Meulen
+Reviewer: Shayan Ramezani
+
+- We used Vagrant to create multiple virtual machines that run the app. After running ```vagrant up``` these can be accessed with the command ```vagrant ssh controller1```, ```vagrant ssh worker1``` and ```vagrant ssh worker2``` respectively.
+- A non-trivial ansible script was created to install all the necessary software on the virtual machines. This can be found in ```ansible/playbook-controller.yml``` and ```ansible/playbook-worker.yml```.
+- Each VM has a private network and can communicate directly with all other VMs. This can be tested by first ssh-ing into any of the machines. Then running pining another machine. E.g. 
+  - ```vagrant ssh controller1```
+  - ```ping 192.168.57.11``` to ping worker1.
+- The Vagrantfile uses a loop and template arithmetics to create the VMs. As seen in the definition of the workers which can easily be scaled up to spawn as many workers as necessary. This is done by using the Python file: generate_inventory.py which generates the inventory for Ansible based on the amount of workers defined in the Vagrantfile. And, some simple looping in the Vagrantfile to create the workers.
+
+### Task 2: Setting up Software Environment (ansible)
+Pull request: https://github.com/remla24-team10/operation/pull/4
+Contributor: Shayan Ramezani
+Reviewer: Jan van der Meulen
+- Currently still work in progress, there are still some problems creating the ansible playbooks to setup minikube.
+
+### Task 3: Setting up Software Environment (minikube)
+Pull request: https://github.com/remla24-team10/operation/pull/5
+Contributor: Remi Lejeune
+Reviewer: Michael Chan
+- Now the app can be run using minikube and kubernetes. For both the front and backend `operation-manifests.yaml` contains a deployment, a service and ingress. Minikube utilises an ingress for the app to which has to be tunneled.
+
+### Task 4: App Monitoring & Grafana
+Pull request: https://github.com/remla24-team10/app/pull/3 & https://github.com/remla24-team10/operation/pull/6
+Contributor: Michael Chan
+Reviewer: Remi Lejeune
+- Prometheus ServiceMonitor was used to collect metrics, which includes 2 gauges and a counter. A grafana json file was included in the repository which can be imported in grafana, it contains a dashboard with 3 panels.
+
+
