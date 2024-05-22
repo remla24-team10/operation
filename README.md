@@ -129,12 +129,14 @@ Contributor: Shayan Ramezani and Remi Lejeune
 Reviewer:
 
 ### Task 3: App Monitoring
-Pull request:
+Pull request: https://github.com/remla24-team10/app/pull/3
 Contributor: Michael Chan
-Reviewer: 
+Reviewer: Remi Lejeune
+- Prometheus ServiceMonitor was used to collect metrics, which includes 2 gauges and a counter.
 
 ### Task 4: Grafana 
-Pull request: 
+Pull request: https://github.com/remla24-team10/operation/pull/6
 Contributor: Michael Chan
-Reviewer:
+Reviewer: Remi Lejeune
+- A grafana json file was included in the repository which can be imported in grafana, it contains a dashboard with 3 panels.
 
