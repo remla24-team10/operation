@@ -12,6 +12,8 @@ This is the main repository of [remla24-team10](https://github.com/remla24-team1
 
 ## Installation
 
+### With Vagrant
+
 In this repository run the following commands, make sure you have installed Python, Ansible, Vagrant and Docker-Compose on your machine.:
 
 ```
@@ -30,6 +32,18 @@ vagrant ssh controller
 vagrant ssh worker1 
 vagrant ssh worker2
 ```
+### With docker compose
+1. Login to GitHub Package Registry:
+```
+docker login ghcr.io
+```
+To login, you need a [personal token](https://github.com/settings/tokens/new) that has read:package
+
+2. Run docker-compose
+```
+docker compose up
+```
+
 [//]: # (# This README should introduce your highlevel architecture and that links to the corresponding repositories, so visitors can easily understand your project and find all relevant information. )
 
 
