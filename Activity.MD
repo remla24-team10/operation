@@ -50,7 +50,7 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
 # A3: 
 -- Shayan Ramezani --
 - Created PR: 
-  - https://github.com/remla24-team10/operation/pull/4
+  - https://github.com/remla24-team10/operation/pull/4 (not finished, still draft)
 - Approved PR:
   - https://github.com/remla24-team10/operation/pull/3
 
@@ -72,3 +72,4 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
 - Created PR: 
   - https://github.com/remla24-team10/operation/pull/3
 - Approved PR:
+  - https://github.com/remla24-team10/operation/pull/4 (not finished, still draft)
