@@ -32,7 +32,8 @@ Reviewer: Jan van der Meulen
 Pull request: https://github.com/remla24-team10/operation/pull/5
 Contributor: Remi Lejeune
 Reviewer: Michael Chan
-- Docker compose was migrated to minikube, both methods of running the containers still work. minikube utilises ingresses but still requires minikube tunnel to the ingress.
+- Now the app can be run using minikube and kubernetes. For both the front and backend `operation-manifests.yaml` contains a deployment, a service and ingress. Minikube utilises an ingress for the app to which has to be tunneled.
+
 ### Task 4: App Monitoring & Grafana
 Pull request: https://github.com/remla24-team10/app/pull/3 & https://github.com/remla24-team10/operation/pull/6
 Contributor: Michael Chan
