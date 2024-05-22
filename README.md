@@ -128,6 +128,13 @@ Pull request:
 Contributor: Shayan Ramezani and Remi Lejeune
 Reviewer:
 
+### Task 3: Migrate docker compose to kubernetes
+Pull request: https://github.com/remla24-team10/operation/pull/4
+Contributor: Remi Lejeune
+Reviewer: Michael Chan
+
+Now the app can be run using minikube and kubernetes. For both the front and backend `operation-manifests.yaml` contains a deployment, a service and ingress.
+
 ### Task 3: App Monitoring
 Pull request: https://github.com/remla24-team10/app/pull/3
 Contributor: Michael Chan
