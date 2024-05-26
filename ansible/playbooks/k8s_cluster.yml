@@ -1,0 +1,166 @@
+---
+- hosts: k8s_cluster
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - gnupg-agent
+
+- hosts: controller1
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Add user to Docker group
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
+
+    - name: Install k3d
+      get_url:
+        url: https://github.com/k3d-io/k3d/releases/download/v4.4.8/k3d-linux-amd64
+        dest: /usr/local/bin/k3d
+        mode: '0755'
+
+    - name: Install kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+
+    - name: Ensure .kube directory exists
+      file:
+        path: /home/vagrant/.kube
+        state: directory
+        owner: vagrant
+        group: vagrant
+
+    - name: Ensure .kube directory exists
+      file:
+        path: /home/vagrant/.kube
+        state: directory
+        owner: vagrant
+        group: vagrant
+
+    - name: Create k3d cluster
+      command: k3d cluster create mycluster --servers 1 --agents 2
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
+      ignore_errors: yes
+
+    - name: Generate kubeconfig for k3d cluster
+      command: k3d kubeconfig get mycluster
+      register: kubeconfig_content
+
+    - name: Write kubeconfig content to file
+      copy:
+        content: "{{ kubeconfig_content.stdout }}"
+        dest: /home/vagrant/.kube/config
+        owner: vagrant
+        group: vagrant
+        mode: '0644'
+
+    - name: Verify kubeconfig file
+      stat:
+        path: /home/vagrant/.kube/config
+      register: kubeconfig
+
+    - name: Fail if kubeconfig is not generated
+      fail:
+        msg: "Kubeconfig file was not generated!"
+      when: not kubeconfig.stat.exists
+
+    - name: Copy kubeconfig for host-based kubectl
+      synchronize:
+        src: /home/vagrant/.kube/config
+        dest: ./kubeconfig
+        mode: pull
+
+- hosts: worker
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+      become: yes
+
+    - name: Add user to Docker group
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
+
+- hosts: controller1
+  become: yes
+  tasks:
+    - name: Install Helm
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+    - name: Add Helm repositories
+      shell: |
+        helm repo add stable https://charts.helm.sh/stable
+        helm repo update
+
+    - name: Install Prometheus
+      shell: |
+        helm upgrade prometheus stable/prometheus --namespace monitoring --create-namespace
+
+    - name: Install Grafana
+      shell: |
+        helm upgrade grafana stable/grafana --namespace monitoring
+
+    - name: Install Kubernetes Dashboard
+      shell: |
+        helm upgrade kubernetes-dashboard stable/kubernetes-dashboard --namespace kube-system
+
+    - name: Expose Prometheus via NodePort
+      shell: |
+        kubectl expose service prometheus-server --type=NodePort --name=prometheus-np --namespace=monitoring
+
+    - name: Expose Grafana via NodePort
+      shell: |
+        kubectl expose service grafana --type=NodePort --name=grafana-np --namespace=monitoring
+
+    - name: Expose Kubernetes Dashboard via NodePort
+      shell: |
+        kubectl patch svc kubernetes-dashboard -n kube-system --patch '{"spec": {"type": "NodePort"}}'
+
+    - name: Get Prometheus NodePort
+      shell: kubectl get svc prometheus-np -n monitoring -o jsonpath='{.spec.ports[0].nodePort}'
+      register: prometheus_nodeport
+
+    - name: Get Grafana NodePort
+      shell: kubectl get svc grafana-np -n monitoring -o jsonpath='{.spec.ports[0].nodePort}'
+      register: grafana_nodeport
+
+    - name: Get Kubernetes Dashboard NodePort
+      shell: kubectl get svc kubernetes-dashboard -n kube-system -o jsonpath='{.spec.ports[0].nodePort}'
+      register: dashboard_nodeport
+
+    - name: Get Node IP
+      shell: hostname -I | awk '{print $1}'
+      register: node_ip
+
+    - name: Print Access URLs
+      debug:
+        msg: |
+          Prometheus: http://{{ node_ip.stdout }}:{{ prometheus_nodeport.stdout }}
+          Grafana: http://{{ node_ip.stdout }}:{{ grafana_nodeport.stdout }}
+          Kubernetes Dashboard: https://{{ node_ip.stdout }}:{{ dashboard_nodeport.stdout }}
