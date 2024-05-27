@@ -113,22 +113,25 @@
       shell: |
         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
-    - name: Add Helm repositories
-      shell: |
-        helm repo add stable https://charts.helm.sh/stable
-        helm repo update
+# - name: Add Helm repositories
+    #   shell: |
+    #     helm repo add stable https://charts.helm.sh/stable
+    #     helm repo update
 
     - name: Install Prometheus
       shell: |
-        helm upgrade prometheus stable/prometheus --namespace monitoring --create-namespace
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm install prometheus prometheus-community/prometheus --version 25.12.0 --namespace monitoring --create-namespace
 
     - name: Install Grafana
       shell: |
-        helm upgrade grafana stable/grafana --namespace monitoring
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm install grafana grafana/grafana --namespace monitoring
 
     - name: Install Kubernetes Dashboard
       shell: |
-        helm upgrade kubernetes-dashboard stable/kubernetes-dashboard --namespace kube-system
+        helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+        helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system
 
     - name: Expose Prometheus via NodePort
       shell: |
