@@ -180,3 +180,13 @@ Reviewer: Remi Lejeune
 - Prometheus ServiceMonitor was used to collect metrics, which includes 2 gauges and a counter. A grafana json file was included in the repository which can be imported in grafana, it contains a dashboard with 3 panels.
 
 
+## Comments for A4 
+
+### Task 1: Automated Tests
+Pull request: https://github.com/remla24-team10/model-training/pull/4
+Contributor: Jan van der Meulen
+The Pytest library is setup and can be found in the model-training repository undere the ```tests``` folder. 
+
+### Task 2: Continuous Training
+Pull request: https://github.com/remla24-team10/model-training/pull/5
+Contributer: Remi Lejeune 
