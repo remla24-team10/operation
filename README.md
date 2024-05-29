@@ -190,3 +190,7 @@ The Pytest library is setup and can be found in the model-training repository un
 ### Task 2: Continuous Training
 Pull request: https://github.com/remla24-team10/model-training/pull/5
 Contributer: Remi Lejeune 
+
+We can now see the tests results on codecov
+We can also see them in the actions and on the README
+
