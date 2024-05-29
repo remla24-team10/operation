@@ -89,6 +89,7 @@ A4:
 - Created PR: 
   - https://github.com/remla24-team10/model-training/pull/5#pullrequestreview-2086219013
 - Approved PR:
+  - https://github.com/remla24-team10/model-training/pull/3
 -- Jan van der Meulen --
 - Created PR: 
   - https://github.com/remla24-team10/model-training/pull/4 
