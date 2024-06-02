@@ -19,6 +19,9 @@ spec:
     metadata:
       labels:
         app: app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
     spec:
       containers:
       - name: app

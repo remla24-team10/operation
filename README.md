@@ -45,7 +45,13 @@ minikube tunnel
 The project should now be available at localhost (no port) through ingress. 
 Please wait a bit before making a request to the server, the server downloads the model on deployment which takes a few seconds.
 
-### prometheus
+### prometheus (Istio)
+The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
+```
+istioctl dashboard prometheus
+```
+
+### prometheus (OLD)
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
 Additionally the prometheus stack should be installed through helm:
 ```
