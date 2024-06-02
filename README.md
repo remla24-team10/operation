@@ -38,20 +38,21 @@ To run the project using minikube run the following commands:
 Run:
 ```
 minikube start
-minikube addons enable ingress
+kubectl label ns operation istio-injection=enabled
 kubectl apply -f operation-manifests.yaml
 minikube tunnel
 ```
-The project should now be available at localhost (no port) through ingress.
+The project should now be available at localhost (no port) through ingress. 
+Please wait a bit before making a request to the server, the server downloads the model on deployment which takes a few seconds.
 
 ### prometheus
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
 Additionally the prometheus stack should be installed through helm:
 ```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add myprom https://prometheus-community.github.io/helm-charts
 helm install myprom prom-repo/kube-prometheus-stack
 ```
-Afterwards the prometheus dashboard can be ran using:
+After reapplying operation-manifests.yaml the prometheus dashboard can be ran using:
 ```
 minikube service myprom-kube-prometheus-sta-prometheus --url
 ```
