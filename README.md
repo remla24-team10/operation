@@ -54,6 +54,12 @@ The project supports dashboards for various metrics utilising prometheus, for th
 ```
 istioctl dashboard prometheus
 ```
+The custom metrics which we collect include:
+```
+num_requests - Reflects the number of times a page has been served.
+average_probability - Reflects the average response value of the model
+average_phishing - Reflects the ratio of phishing among all requests
+```
 
 ### prometheus (OLD)
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
