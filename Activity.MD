@@ -95,3 +95,21 @@ A4:
   - https://github.com/remla24-team10/model-training/pull/4 
 - Approved PR:
   - https://github.com/remla24-team10/model-training/pull/5#pullrequestreview-2086219013
+
+A5: 
+-- Shayan Ramezani --
+- Created PR: 
+  - https://github.com/remla24-team10/operation/pull/4
+- Approved PR: 
+  - https://github.com/remla24-team10/app/pull/4 
+-- Michael Chan --
+- Created PR: https://github.com/remla24-team10/operation/pull/9
+- Approved PR: 
+-- Remi Lejeune --
+- Created PR: 
+- Approved PR: https://github.com/remla24-team10/operation/pull/9 
+-- Jan van der Meulen --
+- Created PR: 
+  - https://github.com/remla24-team10/app/pull/4
+- Approved PR: 
+  - https://github.com/remla24-team10/model-service/pull/2 
