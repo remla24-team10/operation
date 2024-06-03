@@ -8,26 +8,61 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-deployment
+  name: app-deployment-v1
   namespace: operation
   labels:
     app: app
+    version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: app
+      version: v1
   template:
     metadata:
       labels:
         app: app
+        version: v1
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "5000"
     spec:
       containers:
       - name: app
-        image: ghcr.io/remla24-team10/app:latest
+        image: ghcr.io/remla24-team10/app:0.0.1
+        ports:
+        - containerPort: 5000
+        env:
+        - name: FLASK_ENV
+          value: "development"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment-v2
+  namespace: operation
+  labels:
+    app: app
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: app
+        version: v2
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+    spec:
+      containers:
+      - name: app
+        image: ghcr.io/remla24-team10/app:0.0.2
         ports:
         - containerPort: 5000
         env:
@@ -40,7 +75,7 @@ metadata:
   name: app-service
   namespace: operation
   labels:
-    app: app-serv
+    app: app
 spec:
   selector:
     app: app
@@ -49,8 +84,6 @@ spec:
     port: 5000
     targetPort: 5000
   type: NodePort
-status:
-  loadBalancer: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -100,7 +133,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: app-serv
+      app: app
   endpoints:
   - interval: 1s
     port: appport
@@ -114,8 +147,12 @@ spec:
   selector:
     istio: ingressgateway
   servers:
-    - port: { number: 80, name: appport , protocol: HTTP }
-      hosts: [ "*" ]
+  - port: 
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -123,16 +160,38 @@ metadata:
   name: app-entry-service
   namespace: operation
 spec:
-  gateways: [ app-gateway ]
-  hosts: [ "*" ]
+  gateways:
+  - app-gateway
+  hosts:
+  - "*"
   http:
-    - match:
-      - uri:
-          prefix: /
-      route:
-        - destination:
-            host: app-service
-
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: app-service
+        subset: v1
+      weight: 50
+    - destination:
+        host: app-service
+        subset: v2
+      weight: 50
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: app-dr
+  namespace: operation
+spec:
+  host: app-service
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
@@ -144,39 +203,38 @@ spec:
     labels:
       app: app
   configPatches:
-    - applyTo: HTTP_FILTER
-      match:
-        context: SIDECAR_INBOUND
-        listener:
-          filterChain:
-            filter:
-              name: "envoy.filters.network.http_connection_manager"
-      patch:
-        operation: INSERT_BEFORE
-        value:
-          name: envoy.filters.http.local_ratelimit
-          typed_config:
-            "@type": type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
-            value:
-              stat_prefix: http_local_rate_limiter
-              token_bucket:
-                max_tokens: 20
-                tokens_per_fill: 20
-                fill_interval: 60s
-              filter_enabled:
-                runtime_key: local_rate_limit_enabled
-                default_value:
-                  numerator: 100
-                  denominator: HUNDRED
-              filter_enforced:
-                runtime_key: local_rate_limit_enforced
-                default_value:
-                  numerator: 100
-                  denominator: HUNDRED
-              response_headers_to_add:
-                - append: false
-                  header:
-                    key: x-local-rate-limit
-                    value: 'true'  
-
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.local_ratelimit
+        typed_config:
+          "@type": type.googleapis.com/udpa.type.v1.TypedStruct
+          type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+          value:
+            stat_prefix: http_local_rate_limiter
+            token_bucket:
+              max_tokens: 20
+              tokens_per_fill: 20
+              fill_interval: 60s
+            filter_enabled:
+              runtime_key: local_rate_limit_enabled
+              default_value:
+                numerator: 100
+                denominator: HUNDRED
+            filter_enforced:
+              runtime_key: local_rate_limit_enforced
+              default_value:
+                numerator: 100
+                denominator: HUNDRED
+            response_headers_to_add:
+            - append: false
+              header:
+                key: x-local-rate-limit
+                value: 'true'  
