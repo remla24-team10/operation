@@ -126,3 +126,4 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
   - https://github.com/remla24-team10/app/pull/4
 - Approved PR: 
   - https://github.com/remla24-team10/model-service/pull/2 
+  - https://github.com/remla24-team10/operation/pull/4
