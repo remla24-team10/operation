@@ -206,7 +206,7 @@ Two app versions have been created and are served on a 50/50 basis via istio. Th
 ### Task 2: Continuous Experimentation
 
 ### Task 3: Additional Use Case 
-Pull request: https://github.com/remla24-team10/operation/pull/11
+Pull request: https://github.com/remla24-team10/operation/pull/12
 Contributor: Michael Chan
 Rate limits were implemented. The rate limit is set to 20 requests per minute for each page version.
 

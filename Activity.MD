@@ -110,7 +110,7 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
 -- Michael Chan --
 - Created PR: 
   - https://github.com/remla24-team10/operation/pull/9
-  - https://github.com/remla24-team10/operation/pull/11
+  - https://github.com/remla24-team10/operation/pull/12
 - Approved PR:
   - Remis PR TODO
 
@@ -119,6 +119,7 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
   - Remis PR TODO
 - Approved PR: 
   - https://github.com/remla24-team10/operation/pull/9 
+  - https://github.com/remla24-team10/operation/pull/12
   
 -- Jan van der Meulen --
 - Created PR: 
