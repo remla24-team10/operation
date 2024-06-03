@@ -116,7 +116,7 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
 
 -- Remi Lejeune --
 - Created PR:
-  - Remis PR TODO
+  - https://github.com/remla24-team10/operation/pull/13
 - Approved PR: 
   - https://github.com/remla24-team10/operation/pull/9 
   - https://github.com/remla24-team10/operation/pull/12
