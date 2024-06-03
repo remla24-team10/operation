@@ -5,14 +5,16 @@ def generate_inventory(num_workers):
     inventory_text = ""
 
     inventory_text += "[controller]\n"
-    inventory_text += "controller1 ansible_host=192.168.56.4 ansible_user=vagrant\n\n"
+    inventory_text += "vagrant@192.168.57.4\n"
+    inventory_text += "controller1 ansible_host=192.168.57.4 ansible_user=vagrant\n\n"
 
     inventory_text += "[worker]\n"
+    inventory_text += "vagrant@192.168.57.11\nvagrant@192.168.57.12\n"
     for i in range(1, num_workers + 1):
-        inventory_text += f"worker{i} ansible_host=192.168.56.{i + 10} ansible_user=vagrant\n"
+        inventory_text += f"worker{i} ansible_host=192.168.57.{i + 10} ansible_user=vagrant\n"
     inventory_text += "\n"
 
-    inventory_text += "[kubernetes:children]\n"
+    inventory_text += "[k8s_cluster:children]\n"
     inventory_text += "controller\n"
     inventory_text += "worker\n"
 

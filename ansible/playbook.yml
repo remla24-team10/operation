@@ -1,0 +1,15 @@
+- name: Gather facts for all hosts
+  hosts: all
+  gather_facts: yes
+  
+- name: Set up the controller node
+  hosts: controllers
+  become: yes
+  roles:
+    - k8s-controller
+
+- name: Set up the worker nodes
+  hosts: workers
+  become: yes
+  roles:
+    - k8s-worker

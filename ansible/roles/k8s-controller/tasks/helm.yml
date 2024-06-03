@@ -1,0 +1,65 @@
+# helm-deployments.yml
+- name: Deploy Prometheus, Grafana, and Kubernetes Dashboard
+  hosts: controllers
+  become: yes
+  tasks:
+    - name: Change permission
+      file:
+        path: /home/vagrant/.kube/config
+        mode: '0644'
+        owner: vagrant
+        group: vagrant
+
+    - name: Verify kubeconfig content
+      command: cat /home/vagrant/.kube/config
+      register: kubeconfig_content
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
+
+    - debug:
+        msg: "{{ kubeconfig_content.stdout }}"
+
+    - name: Install Helm
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
+
+    - name: Add Helm repositories
+      shell: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+        helm repo update
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
+
+    - name: Install or Upgrade Grafana
+      shell: |
+        if helm ls --namespace monitoring | grep grafana; then
+          helm upgrade grafana grafana/grafana --namespace monitoring
+        else
+          helm install grafana grafana/grafana --namespace monitoring --create-namespace
+        fi
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
+
+    - name: Install or Upgrade Kubernetes Dashboard
+      shell: |
+        if helm ls --namespace kube-system | grep kubernetes-dashboard; then
+          helm upgrade kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system
+        else
+          helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system --create-namespace
+        fi
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config
+
+    - name: Install or Upgrade Prometheus
+      shell: |
+        if helm ls --namespace monitoring | grep prometheus; then
+          helm upgrade prometheus prometheus-community/prometheus --version 25.12.0 --namespace monitoring
+        else
+          helm install prometheus prometheus-community/prometheus --version 25.12.0 --namespace monitoring --create-namespace
+        fi
+      environment:
+        KUBECONFIG: /home/vagrant/.kube/config

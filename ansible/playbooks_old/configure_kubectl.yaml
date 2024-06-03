@@ -1,0 +1,23 @@
+---
+- name: Configure kubectl on host
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    # - name: Ensure .kube directory exists
+    #   file:
+    #     path: "{{ lookup('env', 'HOME') }}/.kube"
+    #     state: directory
+    #     mode: '0755'
+
+    - name: Fetch kubeconfig from Minikube
+      fetch:
+        src: "/etc/kubernetes/admin.conf"
+        dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+        flat: yes
+
+    - name: Set KUBECONFIG environment variable on host
+      lineinfile:
+        path: "{{ lookup('env', 'HOME') }}/.bashrc"
+        line: 'export KUBECONFIG="$HOME/.kube/config"'
+        create: yes

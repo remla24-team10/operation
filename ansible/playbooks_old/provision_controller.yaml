@@ -1,0 +1,285 @@
+# # ---
+# # - name: Provision Kubernetes Controller
+# #   hosts: controller
+# #   become: true
+# #   vars:
+# #     pod_network_cidr: "10.244.0.0/16"
+# #     minikube_version: "latest"
+# #     kubectl_version: "v1.30.1"
+# #     crictl_version: "v1.30.0"
+
+# #   tasks:
+# #     - name: Ensure /usr/local/bin is writable
+# #       file:
+# #         path: /usr/local/bin
+# #         state: directory
+# #         mode: '0755'
+
+# #     - name: Install dependencies
+# #       apt:
+# #         name: 
+# #           - curl
+# #           - apt-transport-https
+# #           - docker.io
+# #           - conntrack
+# #           - socat
+# #           - ebtables
+# #           - apt-transport-https
+# #           - curl
+# #           - gnupg
+# #         state: present
+# #         update_cache: true
+
+# #     - name: make directory for kubeadm
+# #       file:
+# #         path: /etc/apt/keyrings
+# #         state: directory
+# #         mode: '0755'
+
+# #     - name: Download and add the Kubernetes signing key
+# #       get_url:
+# #         url: "https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key"
+# #         dest: "/tmp/kubernetes-release.key"
+# #       register: download_key
+
+# #     - name: Add the Kubernetes signing key
+# #       apt_key:
+# #         file: "/tmp/kubernetes-release.key"
+# #         state: present
+# #       when: download_key is succeeded
+
+      
+# #     - name: Add Kubernetes repository
+# #       apt_repository:
+# #         repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb /"
+# #         state: present
+# #         filename: 'kubernetes.list'
+
+# #     # - name: adjust setting for installing kubectl, kubeadm, kubelet   
+# #     #   shell: |
+# #     #     curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+# #     #     echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
+
+# #     - name: Update apt cache
+# #       apt:
+# #         update_cache: true
+
+# #     # - name: Install   kubectl
+# #     #   get_url:
+# #     #     url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+# #     #     dest: "/usr/local/bin/kubectl"
+# #     #     mode: '0755'
+# #     #   when: kubectl_version != ""
+
+# #     - name: Install kubectl
+# #       apt:
+# #         name: kubectl
+# #         state: present
+    
+# #     # - name: Install crictl
+# #     #   get_url:
+# #     #     url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ crictl_version }}/crictl-{{ crictl_version }}-darwin-arm64.tar.gz"
+# #     #     dest: "/usr/local/bin/crictl"
+# #     #     mode: '0755'
+
+# #     - name: Install Kubeadm
+# #       apt:
+# #         name: kubeadm
+# #         state: present
+
+# #     - name: Install Kubelet
+# #       apt:
+# #         name: kubelet
+# #         state: present
+
+# #     - name: Hold kubectl, kubeadm, kubelet
+# #       shell: apt-mark hold kubectl kubeadm kubelet
+        
+
+# #     - name: Initialize Kubernetes master
+# #       command: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
+# #       register: kubeadm_init
+# #       changed_when: "'This node has joined the cluster' not in kubeadm_init.stdout"
+
+# #     - name: Create kubeconfig directory
+# #       file:
+# #         path: "/root/.kube"
+# #         state: directory
+# #         mode: 0755
+
+# #     - name: Copy admin.conf to kubeconfig
+# #       copy:
+# #         src: /etc/kubernetes/admin.conf
+# #         dest: /root/.kube/config
+# #         remote_src: yes
+
+# #     - name: Install Flannel network plugin
+# #       shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+# #       args:
+# #         creates: /etc/cni/net.d/10-flannel.conflist
+
+# #     - name: Save join command
+# #       shell: kubeadm token create --print-join-command > /root/join_command
+# #       register: join_command
+
+
+# ---
+# - name: Provision Kubernetes controller
+#   hosts: controller
+#   vars: 
+#     minikube_version: "v1.33.1"
+#     kubectl_version: "v1.30.1"
+#     ansible_user: 
+
+#   tasks:
+#     - name: install minikube
+#       apt:
+#         deb: https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube_latest_amd64.deb
+#         state: present
+
+#     - name: download helm
+#       unarchive:
+#         src: "https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz"
+#         remote_src: yes
+#         dest: /tmp
+#       notify:
+#         - install helm
+
+#     - name: install kubectl
+#       get_url:
+#         url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+#         dest: /usr/local/bin/kubectl
+#         mode: "0755"
+
+#     - name: Add Docker's official GPG key
+#       become: true
+#       shell: |
+#         apt-get update
+#         apt-get install ca-certificates curl
+#         install -m 0755 -d /etc/apt/keyrings
+#         curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+#         chmod a+r /etc/apt/keyrings/docker.asc
+#         echo \
+#           "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+#           $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+#           tee /etc/apt/sources.list.d/docker.list > /dev/null
+#         apt-get update
+
+#     - name: install docker
+#       become: true
+#       apt:
+#         name: 
+#           - docker-ce
+#           - docker-ce-cli
+#           - containerd.io
+#           - docker-buildx-plugin
+#           - docker-compose-plugin
+#         state: present
+#         update_cache: yes
+
+#     - name: Add user to the Docker group
+#       become: true
+#       user:
+#         name: "{{ ansible_user }}"
+#         groups: docker
+#         append: yes
+
+#     - name: Reboot the machine
+#       become: true
+#       reboot:
+#         msg: "Reboot initiated by Ansible for updates"
+
+#     - name: Start Minikube
+#       shell: minikube start --driver=docker
+
+#     - name: Initialize Kubernetes master
+#       shell: |
+#         kubeadm init --pod-network-cidr=192.168.0.0/16
+
+#     - name: Set up kubeconfig for vagrant user
+#       shell: |
+#         mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && chown $(id -u):$(id -g) $HOME/.kube/config
+#       args:
+#         executable: /bin/bash
+
+#     - name: Install Calico network plugin
+#       shell: "kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml"
+
+#     - name: Allow scheduling on the control plane
+#       shell: "kubectl taint nodes --all node-role.kubernetes.io/master-"
+
+#   handlers:
+#     - name: install helm
+#       copy:
+#         src: /tmp/linux-amd64/helm
+#         remote_src: yes
+#         dest: /usr/local/bin/helm
+#         mode: "0755"
+
+
+---
+- name: Install Docker and k3d
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install prerequisites
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Add Docker's official GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Set up the Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
+        state: present
+
+    - name: Install Docker Engine
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Install k3d
+      shell: curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+      args:
+        executable: /bin/bash
+
+    - name: Create Kubernetes Cluster
+      hosts: control
+      become: yes
+      tasks:
+        - name: Create k3d cluster
+          shell: k3d cluster create mycluster --agents 2
+
+    - name: Install Helm and Deploy Charts
+      hosts: control
+      become: yes
+      tasks:
+        - name: Install Helm
+          shell: curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          args:
+            executable: /bin/bash
+
+        - name: Add Helm stable repository
+          shell: helm repo add stable https://charts.helm.sh/stable
+
+        - name: Update Helm repositories
+          shell: helm repo update
+
+        - name: Install Prometheus
+          shell: helm install prometheus stable/prometheus
+
+        - name: Install Grafana
+          shell: helm install grafana stable/grafana
+
+        - name: Install Kubernetes Dashboard
+          shell: helm install kubernetes-dashboard stable/kubernetes-dashboard
