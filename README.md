@@ -197,3 +197,11 @@ Pipeline currently automatically runs fast tests only.
 We can now see the tests results on codecov
 We can also see them in the actions and on the README
 
+## Comments for A5
+
+### Task 1: Traffic Management
+
+### Task 2: Continuous Experimentation
+
+### Task 3: Additional Use Case 
+
