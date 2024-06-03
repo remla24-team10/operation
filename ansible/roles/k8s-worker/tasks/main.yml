@@ -1,0 +1,35 @@
+- include_tasks: ../docker.yml
+
+- name: Ensure Docker is running
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Debug Docker status
+  shell: |
+    docker ps
+  register: docker_status
+
+- name: Set Docker status fact
+  set_fact:
+    docker_status: "{{ docker_status.stdout }}"
+
+# - name: Debug controller IP and k3s token on worker
+#   debug:
+#     msg: 
+#       - "Controller IP: {{ hostvars['controller']['ansible_host'] }}"
+#       - "k3s Token: {{ hostvars['controller']['k3s_token'] }}"
+
+# - name: Install k3s agent
+#   shell: |
+#     curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['controller']['ansible_host'] }}:6443 K3S_TOKEN={{ hostvars['controller']['k3s_token'] }} sh -
+#   environment:
+#     K3S_URL: "https://{{ hostvars['controller']['ansible_host'] }}:6443"
+#     K3S_TOKEN: "{{ hostvars['controller']['k3s_token'] }}"
+
+# - name: Ensure k3s agent is running
+#   systemd:
+#     name: k3s-agent
+#     state: started
+#     enabled: yes

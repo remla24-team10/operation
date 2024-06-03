@@ -1,0 +1,22 @@
+---
+- name: Deploy Prometheus and Grafana
+  hosts: controller
+  become: yes
+  tasks:
+    - name: Install Prometheus with Helm
+      shell: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        helm install prometheus prometheus-community/prometheus
+
+    - name: Install Grafana with Helm
+      shell: |
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm repo update
+        helm install grafana grafana/grafana
+
+    - name: Install Kubernetes Dashboard
+      shell: |
+        helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+        helm repo update
+        helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard

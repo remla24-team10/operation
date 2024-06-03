@@ -1,0 +1,55 @@
+---
+- name: Provision Kubernetes Worker Nodes
+  hosts: workers
+  become: true
+  vars:
+    minikube_version: "latest"
+    kubectl_version: "v1.30.1"
+
+  tasks:
+    - name: Ensure /usr/local/bin is writable
+      file:
+        path: /usr/local/bin
+        state: directory
+        mode: '0755'
+
+    - name: Install dependencies
+      apt:
+        name: 
+          - curl
+          - apt-transport-https
+          - docker.io
+          - conntrack
+          - socat
+          - ebtables
+        state: present
+        update_cache: yes
+
+    - name: Install kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+        dest: "/usr/local/bin/kubectl"
+        mode: '0755'
+        creates: "/usr/local/bin/kubectl"
+      when: kubectl_version != ""
+
+    - name: Install Minikube
+      get_url:
+        url: "https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube-linux-amd64"
+        dest: "/usr/local/bin/minikube"
+        mode: '0755'
+        creates: "/usr/local/bin/minikube"
+      when: minikube_version != ""
+
+    - name: Copy join command from controller
+      fetch:
+        src: /root/join_command
+        dest: /tmp/join_command
+        flat: yes
+      delegate_to: controller1
+
+    - name: Join the cluster
+      command: "{{ lookup('file', '/tmp/join_command') }}"
+      register: join_cluster
+      changed_when: "'This node has joined the cluster' not in join_cluster.stdout"
+      when: "'This node has joined the cluster' not in join_cluster.stdout"
