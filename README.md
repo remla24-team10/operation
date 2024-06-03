@@ -53,6 +53,7 @@ helm install myprom prom-repo/kube-prometheus-stack
 ```
 Afterwards the prometheus dashboard can be ran using:
 ```
+kubectl patch svc myprom-kube-prometheus-sta-prometheus -p '{"spec": {"type": "NodePort"}}'
 minikube service myprom-kube-prometheus-sta-prometheus --url
 ```
 
@@ -60,6 +61,7 @@ minikube service myprom-kube-prometheus-sta-prometheus --url
 Grafana can also be used for further visualisation of the metrics, to run grafana prometheus should be active.
 Run:
 ```
+kubectl patch svc myprom-grafana -p '{"spec": {"type": "NodePort"}}'
 minikube service myprom-grafana --url
 ```
 Afterwards login to the dashboard using the default credentials:
@@ -194,4 +196,12 @@ Contributer: Remi Lejeune & Shayan Ramezani
 Pipeline currently automatically runs fast tests only.
 We can now see the tests results on codecov
 We can also see them in the actions and on the README
+
+## Comments for A5
+
+### Task 1: Traffic Management
+
+### Task 2: Continuous Experimentation
+
+### Task 3: Additional Use Case 
 
