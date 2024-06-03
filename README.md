@@ -33,25 +33,42 @@ Run docker-compose:
 docker compose up
 ```
 The front-end application should now be available at localhost:5000.
-### With kubernetes (minikube)
-To run the project using minikube run the following commands:
+### With kubernetes and istio (minikube)
+This project requires istio to be installed [Istio Download](https://istio.io/latest/docs/setup/getting-started/#download).
+
+Then run the project using minikube run the following commands:
 Run:
 ```
 minikube start
-minikube addons enable ingress
+istioctl install
+kubectl apply -f [istio install location]/samples/addons/prometheus.yaml
+kubectl label ns operation istio-injection=enabled
 kubectl apply -f operation-manifests.yaml
 minikube tunnel
 ```
-The project should now be available at localhost (no port) through ingress.
+The project should now be available at localhost (no port) through ingress. 
+Please wait a bit before making a request to the server, the server downloads the model on deployment which takes a few seconds.
 
-### prometheus
+### prometheus (Istio)
+The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
+```
+istioctl dashboard prometheus
+```
+The custom metrics which we collect include:
+```
+num_requests - Reflects the number of times a page has been served.
+average_probability - Reflects the average response value of the model
+average_phishing - Reflects the ratio of phishing among all requests
+```
+
+### prometheus (OLD)
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
 Additionally the prometheus stack should be installed through helm:
 ```
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add myprom https://prometheus-community.github.io/helm-charts
 helm install myprom prom-repo/kube-prometheus-stack
 ```
-Afterwards the prometheus dashboard can be ran using:
+After reapplying operation-manifests.yaml the prometheus dashboard can be ran using:
 ```
 kubectl patch svc myprom-kube-prometheus-sta-prometheus -p '{"spec": {"type": "NodePort"}}'
 minikube service myprom-kube-prometheus-sta-prometheus --url
@@ -196,4 +213,3 @@ Contributer: Remi Lejeune & Shayan Ramezani
 Pipeline currently automatically runs fast tests only.
 We can now see the tests results on codecov
 We can also see them in the actions and on the README
-

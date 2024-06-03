@@ -19,6 +19,9 @@ spec:
     metadata:
       labels:
         app: app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
     spec:
       containers:
       - name: app
@@ -85,18 +88,6 @@ spec:
   - port: 8080
     targetPort: 8080
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-ingress
-  namespace: operation
-spec:
-  defaultBackend:
-    service:
-      name: app-service
-      port:
-        number: 5000
----
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -109,5 +100,36 @@ spec:
     matchLabels:
       app: app-serv
   endpoints:
-  - interval: 10s
+  - interval: 1s
     port: appport
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: app-gateway
+  namespace: operation
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port: { number: 80, name: appport , protocol: HTTP }
+      hosts: [ "*" ]
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: app-entry-service
+  namespace: operation
+spec:
+  gateways: [ app-gateway ]
+  hosts: [ "*" ]
+  http:
+    - match:
+      - uri:
+          prefix: /
+      route:
+        - destination:
+            host: app-service
+
+
+
