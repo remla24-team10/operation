@@ -1,0 +1,21 @@
+---
+- name: Update /etc/hosts with Minikube IP
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Get Minikube IP
+      command: minikube ip
+      register: minikube_ip
+      changed_when: false
+    #   failed_when: minikube_ip.rc != 0
+
+    # - name: Fail if Minikube IP cannot be retrieved
+    #   fail:
+    #     msg: "Unable to retrieve Minikube IP"
+    #   when: minikube_ip.rc != 0
+
+    - name: Add entries to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ minikube_ip.stdout }} prometheus.local grafana.local dashboard.local"
+        state: present
