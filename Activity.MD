@@ -74,24 +74,56 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
 - Approved PR:
   - https://github.com/remla24-team10/operation/pull/4 (not finished, still draft)
 
-A4: 
+# A4: 
 -- Shayan Ramezani --
 - Created PR: 
-  -
+  - https://github.com/remla24-team10/model-training/pull/3
 - Approved PR:
-  - 
+  - https://github.com/remla24-team10/model-training/pull/4 
+
 -- Michael Chan --
 - Created PR: 
-  -
+  - https://github.com/remla24-team10/model-training/pull/6
 - Approved PR:
-  - 
+  - https://github.com/remla24-team10/model-training/pull/4 
+
 -- Remi Lejeune --
 - Created PR: 
   - https://github.com/remla24-team10/model-training/pull/5#pullrequestreview-2086219013
 - Approved PR:
   - https://github.com/remla24-team10/model-training/pull/3
+
 -- Jan van der Meulen --
 - Created PR: 
   - https://github.com/remla24-team10/model-training/pull/4 
 - Approved PR:
   - https://github.com/remla24-team10/model-training/pull/5#pullrequestreview-2086219013
+  - https://github.com/remla24-team10/model-training/pull/6
+
+# A5: 
+-- Shayan Ramezani --
+- Created PR: 
+  - https://github.com/remla24-team10/operation/pull/4
+- Approved PR: 
+  - https://github.com/remla24-team10/app/pull/4 
+
+-- Michael Chan --
+- Created PR: 
+  - https://github.com/remla24-team10/operation/pull/9
+  - https://github.com/remla24-team10/operation/pull/12
+- Approved PR:
+  - https://github.com/remla24-team10/operation/pull/13
+
+-- Remi Lejeune --
+- Created PR:
+  - https://github.com/remla24-team10/operation/pull/13
+- Approved PR: 
+  - https://github.com/remla24-team10/operation/pull/9 
+  - https://github.com/remla24-team10/operation/pull/12
+  
+-- Jan van der Meulen --
+- Created PR: 
+  - https://github.com/remla24-team10/app/pull/4
+- Approved PR: 
+  - https://github.com/remla24-team10/model-service/pull/2 
+  - https://github.com/remla24-team10/operation/pull/4
