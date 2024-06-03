@@ -200,8 +200,13 @@ We can also see them in the actions and on the README
 ## Comments for A5
 
 ### Task 1: Traffic Management
-
+Pull request: https://github.com/remla24-team10/operation/pull/9 & https://github.com/remla24-team10/app/pull/4
+Contributor: Jan van der Meulen & Michael Chan
+Two app versions have been created and are served on a 50/50 basis via istio. This can be set to 90/10 later but 50/50 makes it easier to test, additionally the prometheus update interval is set to 1s for the same reason.
 ### Task 2: Continuous Experimentation
 
 ### Task 3: Additional Use Case 
+Pull request: https://github.com/remla24-team10/operation/pull/11
+Contributor: Michael Chan
+Rate limits were implemented. The rate limit is set to 20 requests per minute for each page version.
 
