@@ -180,21 +180,7 @@ spec:
         host: app-service
         subset: v2
       weight: 50
-    - destination:
-        host: app-service
-      headers:
-        request:
-          add:
-            x-istio-session-id: "{cookie(app-session-id)}"
-      weight: 50
-    name: "sticky-sessions"
-  trafficPolicy:
-    loadBalancer:
-      consistentHash:
-        httpCookie:
-          name: "app-session-id"
-          ttl: "0s"
-
+---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
