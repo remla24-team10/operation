@@ -106,7 +106,7 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: my-gateway
+  name: app-gateway
   namespace: operation
 spec:
   selector:
@@ -118,10 +118,10 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: my-entry-service
+  name: app-entry-service
   namespace: operation
 spec:
-  gateways: [ my-gateway ]
+  gateways: [ app-gateway ]
   hosts: [ "*" ]
   http:
     - match:
@@ -130,5 +130,6 @@ spec:
       route:
         - destination:
             host: app-service
+
 
 

@@ -33,11 +33,15 @@ Run docker-compose:
 docker compose up
 ```
 The front-end application should now be available at localhost:5000.
-### With kubernetes (minikube)
-To run the project using minikube run the following commands:
+### With kubernetes and istio (minikube)
+This project requires istio to be installed [Istio Download](https://istio.io/latest/docs/setup/getting-started/#download).
+
+Then run the project using minikube run the following commands:
 Run:
 ```
 minikube start
+istioctl install
+kubectl apply -f [istio install location]/samples/addons/prometheus.yaml
 kubectl label ns operation istio-injection=enabled
 kubectl apply -f operation-manifests.yaml
 minikube tunnel
@@ -201,4 +205,3 @@ Contributer: Remi Lejeune & Shayan Ramezani
 Pipeline currently automatically runs fast tests only.
 We can now see the tests results on codecov
 We can also see them in the actions and on the README
-
