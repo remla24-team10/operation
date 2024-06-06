@@ -1,0 +1,35 @@
+\documentclass[sigconf,nonacm]{acmart}
+
+% meta-data -- adjust to meaningful values
+\title{Project Report -- Group XX}
+\author{Ben Trovato, G.K.M. Tobin, Lars Th{\o}rv{\"a}ld, Valerie B\'eranger,}
+\author{Aparna Patel, Huifen Chan, Charles Palmer}
+
+% remove overhead that is used in regular ACM papers
+\settopmatter{printacmref=false} % box after abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % copyright on first page
+\pagestyle{plain} % running headers
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+
+% The given structure is an example. Make sure that you adopt was have been
+% requested in the assignment.
+
+\begin{abstract}
+\input{content/abstract}
+\end{abstract}
+
+\maketitle
+
+\input{content/introduction}
+\input{content/structure}
+\input{content/citations}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\end{document}
+\endinput
