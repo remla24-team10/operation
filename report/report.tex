@@ -1,9 +1,10 @@
 \documentclass[sigconf,nonacm]{acmart}
 
 % meta-data -- adjust to meaningful values
-\title{Project Report -- Group XX}
-\author{Ben Trovato, G.K.M. Tobin, Lars Th{\o}rv{\"a}ld, Valerie B\'eranger,}
-\author{Aparna Patel, Huifen Chan, Charles Palmer}
+\title{Project Report -- Group 10}
+\author{???}
+\author{???}
+
 
 % remove overhead that is used in regular ACM papers
 \settopmatter{printacmref=false} % box after abstract
@@ -12,21 +13,30 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
 
 \begin{document}
 
 % The given structure is an example. Make sure that you adopt was have been
 % requested in the assignment.
 
-\begin{abstract}
-\input{content/abstract}
-\end{abstract}
+% \begin{abstract}
+% \input{content/abstract}
+% \end{abstract}
 
 \maketitle
 
-\input{content/introduction}
-\input{content/structure}
-\input{content/citations}
+\input{content/Release-Pipeline-Documentation}
+\input{content/Deployment-Documentation}
+\input{content/Extension-Proposal}
+
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}
