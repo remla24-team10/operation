@@ -1,0 +1,44 @@
+% !TEX root =  ../report.tex
+\section{Adding Structure}
+
+Avoid to over-structure your document, e.g., with extensive use of the various levels of \textbackslash{}section.
+Instead, Latex offers a rich arsenal of tools that can help to structure documents
+
+\smallskip
+For a small jump in the argumentation, it is usually enough to use a \textbackslash{}smallskip (or \textbackslash{}medskip, \textbackslash{}bigskip).
+Along these lines, avoid using \textbackslash{}\textbackslash{} in your document to break into new lines, simply use a "double newline" in the source document.
+
+Like this. As you see, the new paragraph will be indented to highlight the start of the next paragraph.
+If this indentation is a concern for you in your document, this is often a sign that your paragraphs are too short.
+
+
+
+%%%
+\paragraph{Named Paragraphs}
+For bigger jumps or to add a bit more context, using \textbackslash{}paragraph is probably the easiest way to make it clear to a reader that you want to start a new thought.
+
+
+%%%
+\paragraph{Lists}
+
+You very often you have to list various options or alternatives in your written texts.
+You can use an itemize (or enumerate) environment to create a list:
+
+\begin{itemize} % or: \begin{enumerate}
+\item This is a bullet point.
+\item This is a long bullet point that breaks a line. Please note that these lists should only be used sparsely, the biggest part of your report should be elaborated text.
+\end{itemize} % or: \end{enumerate}
+
+Another option for structuring your document \emph{in-the-small} is to use a description list.
+In this type of list, you define a key, and the corresponding explanation of the key.
+
+\begin{description}
+\item [First Key] This is the elaboration.
+\item [A Second Key] This is the second elaboration. Please note how Latex takes care of aligning the text in line 2+.
+\end{description}
+
+All these structural element can help with adding structure to the text and making it easier to read.
+Please note how much less of an interruption they are for the overall flow of the text, compared to regular section.
+
+Latex might be scary to newcomers, but knowing a few basic formatting commands is all that is necessary to get started.
+For advanced concepts, the \emph{documentation of the Overleaf platform}\footnote{\url{https://www.overleaf.com/learn}} is usually a good start.
