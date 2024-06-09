@@ -88,10 +88,11 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-service-deployment
+  name: model-service-deployment-v1
   namespace: operation
   labels:
     app: model-service
+    version: v1
 spec:
   replicas: 1
   selector:
@@ -101,6 +102,36 @@ spec:
     metadata:
       labels:
         app: model-service
+        version: v1
+    spec:
+      containers:
+      - name: model-service
+        image: ghcr.io/remla24-team10/model-service:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: FLASK_ENV
+          value: "development"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-service-deployment-v2
+  namespace: operation
+  labels:
+    app: model-service
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-service
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: model-service
+        version: v2
     spec:
       containers:
       - name: model-service
@@ -195,6 +226,36 @@ spec:
   - name: v2
     labels:
       version: v2
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: model-dr
+  namespace: operation
+spec:
+  host: model-service
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: model-service-vs
+  namespace: operation
+spec:
+  hosts: [ model-service ]
+  http:
+    - match:
+        - sourceLabels: { version: v2 }
+      route:
+        - destination: { host: model-service, subset: v2 }
+    - route: # default route
+        - destination: { host: model-service, subset: v1 }
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
