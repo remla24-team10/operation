@@ -10,6 +10,8 @@ The README file contains the architecture, installations and comments for each a
 - [lib-ml](https://github.com/remla24-team10/lib-ml) contains the pre-processing logic for data that is used for training or queries
 - [model-training](https://github.com/remla24-team10/model-training) contains the ML training pipeline and is dependent on lib-ml
 
+## Report
+A readable pdf version of the report can be found in the report folder. 
 
 ## Installation
 
