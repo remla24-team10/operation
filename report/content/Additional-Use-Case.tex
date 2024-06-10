@@ -1,0 +1,3 @@
+
+\section{Additional Use Case}
+In addition to the canary release the Istio service mesh is used to limit the rate of local requests. For this an EnvoyFilter is deployed which limits the number of requests allowed for each instance of app-deployment. It defines a bucket with a maximum capacity of 20 requests. This bucket is completely refilled every minute. This ensures that the services will not be overrun and that they will be able to keep up with the workload. However since it is random which deployment service will be assigned to a user it is possible that a user will be rate limited on one deployment while not on the other which results in inconsistent page availability as the user is not rerouted to the available service.
