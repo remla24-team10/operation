@@ -1,0 +1,293 @@
+% !TEX root =  ../report.tex
+\section{Release Pipeline Documentation}
+\section*{Release Pipeline Documentation for \texttt{lib-ml} Python Package}
+
+This documentation provides a detailed description of the release pipeline used for publishing the \texttt{lib-ml} Python package to PyPI. The goal is to help new team members understand the pipeline steps, the tools used, and the flow of data and artifacts throughout the process. For a illustrative overview, see \autoref{fig:lib-ml-pipeline}.
+
+\subsection{Pipeline Overview}
+
+The release pipeline is triggered when a pull request (PR) is closed. It consists of two main jobs:
+
+\begin{enumerate}
+    \item \textbf{Test}: Runs tests on multiple environments to ensure the code is stable and functional.
+    \item \textbf{Bump Version and Publish}: Bumps the package version, updates files, and publishes the package to PyPI.
+\end{enumerate}
+
+\subsection{Pipeline Steps}
+
+\subsubsection{Testing (\texttt{test} job)}
+
+\paragraph{Purpose}
+Ensure the package works correctly in different environments and Python versions.
+
+\paragraph{Implementation}
+\begin{itemize}
+    \item \textbf{Triggered}: When a pull request is merged.
+    \item \textbf{Runs on}: Multiple OS and Python versions specified in a matrix.
+    \item \textbf{Timeout}: 10 minutes.
+\end{itemize}
+
+\paragraph{Steps}
+\begin{enumerate}
+    \item \textbf{Checkout code}
+    \begin{itemize}
+        \item Uses \texttt{actions/checkout@v4}.
+        \item Fetches the code from the merged pull request.
+    \end{itemize}
+    \item \textbf{Set up Python}
+    \begin{itemize}
+        \item Uses \texttt{actions/setup-python@v5}.
+        \item Sets up the specified Python version from the matrix.
+    \end{itemize}
+    \item \textbf{Install Poetry}
+    \begin{itemize}
+        \item Installs Poetry using \texttt{pipx install poetry} or \texttt{pip install poetry}.
+    \end{itemize}
+    \item \textbf{Install dependencies}
+    \begin{itemize}
+        \item Runs \texttt{poetry install --with dev} to install development dependencies.
+    \end{itemize}
+    \item \textbf{Run tests}
+    \begin{itemize}
+        \item Executes \texttt{poetry run pytest} to run the test suite.
+    \end{itemize}
+\end{enumerate}
+
+% \paragraph{Dataflow}
+% \begin{itemize}
+%     \item The merged code is checked out and set up with the specified Python environment.
+%     \item Dependencies are installed, and tests are executed.
+%     \item No artifacts are generated in this step but the outcome (pass/fail) determines if the next job will run.
+% \end{itemize}
+
+\subsubsection{Bump Version and Publish (\texttt{bump\_version\_and\_publish} job)}
+
+\paragraph{Purpose}
+Bump the package version, update the version in relevant files, and publish the package to PyPI.
+
+\paragraph{Implementation}
+\begin{itemize}
+    \item \textbf{Triggered}: After the successful completion of the \texttt{test} job.
+    \item \textbf{Runs on}: \texttt{ubuntu-latest}.
+\end{itemize}
+
+\paragraph{Steps}
+Steps (1) to (4) are repeated before moving on to the next steps, which are:
+\begin{enumerate}
+    % \item \textbf{Checkout code}
+    % \begin{itemize}
+    %     \item Uses \texttt{actions/checkout@v4}.
+    %     \item Fetches the code from the merged pull request.
+    % \end{itemize}
+    % \item \textbf{Set up Python}
+    % \begin{itemize}
+    %     \item Uses \texttt{actions/setup-python@v5}.
+    %     \item Sets up Python 3.11.
+    % \end{itemize}
+    % \item \textbf{Install Poetry}
+    % \begin{itemize}
+    %     \item Installs Poetry using \texttt{pipx install poetry} or \texttt{pip install poetry}.
+    % \end{itemize}
+    % \item \textbf{Install dependencies}
+    % \begin{itemize}
+    %     \item Runs \texttt{poetry install --with dev} to install development dependencies.
+    % \end{itemize}
+    \item \textbf{Bump version and push tag}
+    \begin{itemize}
+        \item Uses \href{https://github.com/marketplace/actions/github-tag-bump}{\texttt{anothrNick/github-tag-action@1.67.0}}.
+        \item Bumps the version and pushes a new tag to the repository.
+        \item Environment variables used:
+        \begin{itemize}
+            \item \texttt{GITHUB\_TOKEN}: Token for accessing GitHub.
+            \item \texttt{DEFAULT\_BUMP}: Default version bump type (\texttt{patch}).
+            \item \texttt{TAG\_CONTEXT}: Context for tagging (\texttt{branch}).
+            \item \texttt{WITH\_V}: Whether to include 'v' in the version tag (false).
+            \item \texttt{PRERELEASE}: Pre-release flag (false).
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Update files with new version}
+    \begin{itemize}
+        \item Runs \texttt{poetry run bump-my-version replace --config-file pyproject.toml --new-version \$(git describe --tags --abbrev=0)}.
+        \item Updates the version in the \texttt{pyproject.toml} file.
+    \end{itemize}
+    \item \textbf{Build and publish to PyPI}
+    \begin{itemize}
+        \item Runs \texttt{poetry publish --build -u \_\_token\_\_ -p \${{ secrets.PYPI\_API\_KEY }}} to build and publish the package to PyPI.
+        \item Uses \texttt{PYPI\_API\_KEY} secret for authentication.
+    \end{itemize}
+\end{enumerate}
+
+% \paragraph{Dataflow}
+% \begin{itemize}
+%     \item The merged code is checked out again.
+%     \item The Python environment is set up, and dependencies are installed.
+%     \item The version is bumped, and the new tag is pushed to the repository.
+%     \item The \texttt{pyproject.toml} file is updated with the new version.
+%     \item The package is built and published to PyPI.
+% \end{itemize}
+
+\subsection{Artifacts and Data Flow}
+
+\begin{enumerate}
+    \item \textbf{Source Code}: Checked out from the merged pull request.
+    \item \textbf{Python Environment}: Set up using specified versions from the matrix.
+    \item \textbf{Dependencies}: Installed using Poetry.
+    \item \textbf{Test Results}: Determines if the publish job should proceed.
+    \item \textbf{Version Tag}: Created and pushed to the repository.
+    \item \textbf{Updated \texttt{pyproject.toml}}: Contains the new version.
+    \item \textbf{Published Package}: The final artifact, published to PyPI.
+\end{enumerate}
+
+\subsection{Tools Used}
+
+\begin{itemize}
+    \item \textbf{GitHub Actions}: CI/CD platform for running workflows.
+    \item \textbf{Poetry}: Dependency management and packaging tool.
+    \item \textbf{pytest}: Testing framework.
+    \item \href{https://github.com/marketplace/actions/github-tag-bump}{\textbf{anothrNick/github-tag-action}: Action for tagging releases.}
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[node distance=1.5cm]
+        \node (start) [startstop] {Trigger (PR Merge)};
+        \node (test) [process, below of=start] {Test Job};
+        \node (decision1) [decision, below of=test, yshift=-0.5cm] {Tests Passed?};
+        \node (bumpversion) [process, below of=decision1, yshift=-0.5cm] {Bump Version and Publish Job};
+        \node (stop) [startstop, below of=bumpversion] {Package Published to PyPI};
+        \node (fail) [startstop, right of=decision1, xshift=3cm] {Fail Pipeline};
+
+        \draw [arrow] (start) -- (test);
+        \draw [arrow] (test) -- (decision1);
+        \draw [arrow] (decision1) -- node[anchor=east] {Yes} (bumpversion);
+        \draw [arrow] (bumpversion) -- (stop);
+        \draw [arrow] (decision1) -- node[anchor=south] {No} (fail);
+    \end{tikzpicture}
+    \label{fig:lib-ml-pipeline}
+    \caption{Flowchart of \texttt{lib-ml} Python Package Release Pipeline}
+\end{figure}
+
+% \begin{figure}[h!]
+%     \centering
+%     \begin{tikzpicture}[node distance=1.5cm]
+%         \node (source) [process] {Source Code};
+%         \node (env) [process, below of=source] {Python Environment};
+%         \node (deps) [process, below of=env] {Dependencies};
+%         \node (tests) [process, below of=deps] {Test Results};
+%         \node (version) [process, below of=tests] {Version Tag};
+%         \node (pyproject) [process, below of=version] {Updated \texttt{pyproject.toml}};
+%         \node (package) [process, below of=pyproject] {Published Package};
+        
+%         \draw [arrow] (source) -- (env);
+%         \draw [arrow] (env) -- (deps);
+%         \draw [arrow] (deps) -- (tests);
+%         \draw [arrow] (tests) -- (version);
+%         \draw [arrow] (version) -- (pyproject);
+%         \draw [arrow] (pyproject) -- (package);
+%     \end{tikzpicture}
+%     \caption{Data Flow Diagram of \texttt{lib-ml} Python Package Release Pipeline}
+% \end{figure}
+
+\section*{Release Pipeline Documentation for \texttt{model-service} Container Image}
+
+This documentation provides a detailed description of the release pipeline used for publishing the \texttt{model-service} container image. Also here, the goal is to help new team members understand the pipeline steps, the tools used, and the flow of data and artifacts throughout the process. For a illustrative overview, see \autoref{fig:model-service-pipeline}.
+
+\subsection{Pipeline Overview}
+
+The release pipeline is triggered when a new tag matching the pattern \texttt{v[0-9]+.[0-9]+.[0-9]+} is pushed to the repository. It consists of a single job:
+
+\begin{enumerate}
+    \item \textbf{Build}: Builds the Docker image and pushes it to the GitHub Container Registry (GHCR).
+\end{enumerate}
+
+\subsection{Pipeline Steps}
+
+\subsubsection{Build (\texttt{build} job)}
+
+\paragraph{Purpose}
+Build the Docker image for the \texttt{model-service} and push it to the GitHub Container Registry (GHCR).
+
+\paragraph{Implementation}
+\begin{itemize}
+    \item \textbf{Triggered}: When a tag matching the pattern \texttt{v[0-9]+.[0-9]+.[0-9]+} is pushed.
+    \item \textbf{Runs on}: \texttt{ubuntu-22.04}.
+\end{itemize}
+
+\paragraph{Steps}
+\begin{enumerate}
+    \item \textbf{Checkout code}
+    \begin{itemize}
+        \item Uses \texttt{actions/checkout@v4}.
+        \item Checks out the code from the repository.
+    \end{itemize}
+    \item \textbf{Parse version info from tag}
+    \begin{itemize}
+        \item Runs a shell script to parse the version information from the tag.
+        \item Extracts the major, minor, and patch version numbers.
+        \item Sets the parsed version numbers as environment variables.
+    \end{itemize}
+    \item \textbf{Registry Login (ghcr.io)}
+    \begin{itemize}
+        \item Logs into the GitHub Container Registry (GHCR) using the \texttt{GH\_TOKEN} secret.
+        \item Uses the GitHub Actions context for authentication.
+    \end{itemize}
+    \item \textbf{Build and Push Docker Image}
+    \begin{itemize}
+        \item Builds the Docker image using the Dockerfile in the repository.
+        \item Tags the image with:
+        \begin{itemize}
+            \item Full version (e.g., \texttt{v1.2.3}).
+            \item Major and minor version with \texttt{.latest} suffix (e.g., \texttt{1.2.latest}).
+            \item Major version with \texttt{.latest} suffix (e.g., \texttt{1.latest}).
+            \item \texttt{latest} tag.
+        \end{itemize}
+        \item Pushes all tagged images to the GitHub Container Registry.
+    \end{itemize}
+\end{enumerate}
+
+% \paragraph{Dataflow}
+% \begin{itemize}
+%     \item The source code is checked out from the repository.
+%     \item The version information is parsed from the tag and set as environment variables.
+%     \item The Docker image is built and tagged with multiple tags.
+%     \item The Docker image is pushed to the GitHub Container Registry with all the tags.
+% \end{itemize}
+
+\subsection{Artifacts and Data Flow}
+
+\begin{enumerate}
+    \item \textbf{Source Code}: Checked out from the repository.
+    \item \textbf{Docker Image}: Built from the source code.
+    \item \textbf{Version Tags}: Parsed from the pushed tag and used to tag the Docker image.
+    \item \textbf{Published Image}: The final artifact, pushed to the GitHub Container Registry.
+\end{enumerate}
+
+\subsection{Tools Used}
+
+\begin{itemize}
+    \item \textbf{GitHub Actions}: CI/CD platform for running workflows.
+    \item \textbf{Docker}: Containerization platform for building and pushing images.
+    \item \textbf{GitHub Container Registry (GHCR)}: Registry for storing and managing Docker container images.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[node distance=1.5cm]
+        \node (start) [startstop] {Trigger (Tag Push)};
+        \node (build) [process, below of=start] {Build Job};
+        \node (checkout) [process, below of=build] {Checkout Code};
+        \node (parse) [process, below of=checkout] {Parse Version Info};
+        \node (login) [process, below of=parse] {Registry Login};
+        \node (docker) [process, below of=login] {Build and Push Docker Image};
+        \node (stop) [startstop, below of=docker] {Image Published to GHCR};
+        
+        \draw [arrow] (start) -- (build);
+        \draw [arrow] (build) -- (checkout);
+        \draw [arrow] (checkout) -- (parse);
+        \draw [arrow] (parse) -- (login);
+        \draw [arrow] (login) -- (docker);
+        \draw [arrow] (docker) -- (stop);
+    \end{tikzpicture}
+    \caption{Flowchart of \texttt{model-service} Container Image Release Pipeline}
+    \label{fig:model-service-pipeline}
+\end{figure}
