@@ -500,8 +500,8 @@
       citecolor=ACMPurple,
       urlcolor=ACMDarkBlue,
       filecolor=ACMDarkBlue}
-    \else
-    \hypersetup{hidelinks}
+    % \else
+    % \hypersetup{hidelinks}
   \fi
   \hypersetup{pdflang={en},
     pdfdisplaydoctitle}}
