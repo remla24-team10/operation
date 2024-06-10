@@ -135,7 +135,7 @@ A6:
   - https://github.com/remla24-team10/operation/pull/16
   - https://github.com/remla24-team10/operation/pull/17
 - Approved PR: 
-  - 
+  - https://github.com/remla24-team10/operation/pull/20
 -- Michael Chan --
 - Created PR: 
   - https://github.com/remla24-team10/operation/pull/19 
@@ -143,7 +143,7 @@ A6:
   - https://github.com/remla24-team10/operation/pull/18
 -- Remi Lejeune --
 - Created PR: 
-  -
+  - https://github.com/remla24-team10/operation/pull/20
 - Approved PR:
   - https://github.com/remla24-team10/operation/pull/15
   - https://github.com/remla24-team10/operation/pull/16
