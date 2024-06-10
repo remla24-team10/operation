@@ -2,7 +2,7 @@
 \section{Release Pipeline Documentation}
 \section*{Release Pipeline Documentation for \texttt{lib-ml} Python Package}
 
-This documentation provides a detailed description of the release pipeline used for publishing the \texttt{lib-ml} Python package to PyPI. The goal is to help new team members understand the pipeline steps, the tools used, and the flow of data and artifacts throughout the process. For a illustrative overview, see \autoref{fig:lib-ml-pipeline}.
+This documentation provides a detailed description of the release pipeline used for publishing the \texttt{lib-ml} Python package to PyPI. The goal is to help new team members understand the pipeline steps, the tools used, and the flow of data and artifacts throughout the process. For a illustrative overview, see \autoref{fig:lib-ml-pipeline}
 
 \subsection{Pipeline Overview}
 
@@ -163,8 +163,8 @@ Steps (1) to (4) are repeated before moving on to the next steps, which are:
         \draw [arrow] (bumpversion) -- (stop);
         \draw [arrow] (decision1) -- node[anchor=south] {No} (fail);
     \end{tikzpicture}
-    \label{fig:lib-ml-pipeline}
     \caption{Flowchart of \texttt{lib-ml} Python Package Release Pipeline}
+    \label{fig:lib-ml-pipeline}
 \end{figure}
 
 % \begin{figure}[h!]
@@ -291,3 +291,4 @@ Build the Docker image for the \texttt{model-service} and push it to the GitHub 
     \caption{Flowchart of \texttt{model-service} Container Image Release Pipeline}
     \label{fig:model-service-pipeline}
 \end{figure}
+
