@@ -1,10 +1,10 @@
 % !TEX root =  ../report.tex
-\section{Release Pipeline Documentation}
-\section*{Release Pipeline Documentation for \texttt{lib-ml} Python Package}
+\section{Pipeline Documentation}
+In this section, all the pipelines are documented. The purpose of the pipelines in the \texttt{lib-ml}, \texttt{lib-version}, \texttt{model-service} and \texttt{app} repositories is to release the software. The purpose of the pipeline of the \texttt{model-training} repository is testing. The goal is to help new team members understand the pipeline steps, the tools used, and the flow of data and artifacts throughout the process.  
+\subsection{Release Pipeline Documentation for \texttt{lib-ml} Python Package}
+For an illustrative overview, see \autoref{fig:lib-ml-pipeline}
 
-This documentation provides a detailed description of the release pipeline used for publishing the \texttt{lib-ml} Python package to PyPI. The goal is to help new team members understand the pipeline steps, the tools used, and the flow of data and artifacts throughout the process. For a illustrative overview, see \autoref{fig:lib-ml-pipeline}
-
-\subsection{Pipeline Overview}
+\subsubsection{Pipeline Overview}
 
 The release pipeline is triggered when a pull request (PR) is closed. It consists of two main jobs:
 
@@ -13,12 +13,10 @@ The release pipeline is triggered when a pull request (PR) is closed. It consist
     \item \textbf{Bump Version and Publish}: Bumps the package version, updates files, and publishes the package to PyPI.
 \end{enumerate}
 
-\subsection{Pipeline Steps}
+\subsubsection{Pipeline Steps}
 
-\subsubsection{Testing (\texttt{test} job)}
-
-\paragraph{Purpose}
-Ensure the package works correctly in different environments and Python versions.
+\paragraph{Testing (\texttt{test} job)}
+The purpose of the testing job is to ensure the package works correctly in different environments and Python versions.
 
 \paragraph{Implementation}
 \begin{itemize}
@@ -60,10 +58,8 @@ Ensure the package works correctly in different environments and Python versions
 %     \item No artifacts are generated in this step but the outcome (pass/fail) determines if the next job will run.
 % \end{itemize}
 
-\subsubsection{Bump Version and Publish (\texttt{bump\_version\_and\_publish} job)}
-
-\paragraph{Purpose}
-Bump the package version, update the version in relevant files, and publish the package to PyPI.
+\paragraph{Bump Version and Publish (\texttt{bump\_version\_and\_publish} job)}
+The purpose of this step is to bump the package version, update the version in relevant files, and publish the package to PyPI.
 
 \paragraph{Implementation}
 \begin{itemize}
@@ -72,7 +68,7 @@ Bump the package version, update the version in relevant files, and publish the 
 \end{itemize}
 
 \paragraph{Steps}
-Steps (1) to (4) are repeated before moving on to the next steps, which are:
+Steps (1) to (4) of the test job are repeated before moving on to the next steps, which are:
 \begin{enumerate}
     % \item \textbf{Checkout code}
     % \begin{itemize}
@@ -94,11 +90,11 @@ Steps (1) to (4) are repeated before moving on to the next steps, which are:
     % \end{itemize}
     \item \textbf{Bump version and push tag}
     \begin{itemize}
-        \item Uses \href{https://github.com/marketplace/actions/github-tag-bump}{\texttt{anothrNick/github-tag-action@1.67.0}}.
+        \item Uses \href{https://GitHub.com/marketplace/actions/GitHub-tag-bump}{\texttt{anothrNick/GitHub-tag-action@1.67.0}}.
         \item Bumps the version and pushes a new tag to the repository.
         \item Environment variables used:
         \begin{itemize}
-            \item \texttt{GITHUB\_TOKEN}: Token for accessing GitHub.
+            \item \texttt{GitHub\_TOKEN}: Token for accessing GitHub.
             \item \texttt{DEFAULT\_BUMP}: Default version bump type (\texttt{patch}).
             \item \texttt{TAG\_CONTEXT}: Context for tagging (\texttt{branch}).
             \item \texttt{WITH\_V}: Whether to include 'v' in the version tag (false).
@@ -126,7 +122,7 @@ Steps (1) to (4) are repeated before moving on to the next steps, which are:
 %     \item The package is built and published to PyPI.
 % \end{itemize}
 
-\subsection{Artifacts and Data Flow}
+\subsubsection{Artifacts and Data Flow}
 
 \begin{enumerate}
     \item \textbf{Source Code}: Checked out from the merged pull request.
@@ -136,16 +132,12 @@ Steps (1) to (4) are repeated before moving on to the next steps, which are:
     \item \textbf{Version Tag}: Created and pushed to the repository.
     \item \textbf{Updated \texttt{pyproject.toml}}: Contains the new version.
     \item \textbf{Published Package}: The final artifact, published to PyPI.
+    \item \textbf{Matrix}: a matrix specifying different operating systems and their versions. 
 \end{enumerate}
 
-\subsection{Tools Used}
+\subsubsection{Tools Used}
+Due to most tools being used in multiple pipelines, all tools are described in Section~\ref{sec:tools-used}.
 
-\begin{itemize}
-    \item \textbf{GitHub Actions}: CI/CD platform for running workflows.
-    \item \textbf{Poetry}: Dependency management and packaging tool.
-    \item \textbf{pytest}: Testing framework.
-    \item \href{https://github.com/marketplace/actions/github-tag-bump}{\textbf{anothrNick/github-tag-action}: Action for tagging releases.}
-\end{itemize}
 
 \begin{figure}[h!]
     \centering
@@ -188,11 +180,10 @@ Steps (1) to (4) are repeated before moving on to the next steps, which are:
 %     \caption{Data Flow Diagram of \texttt{lib-ml} Python Package Release Pipeline}
 % \end{figure}
 
-\section*{Release Pipeline Documentation for \texttt{model-service} Container Image}
+\subsection{Release Pipeline Documentation for \texttt{model-service} Container Image}\label{sec:release-model-service}
+For an illustrative overview, see \autoref{fig:model-service-pipeline}.
 
-This documentation provides a detailed description of the release pipeline used for publishing the \texttt{model-service} container image. Also here, the goal is to help new team members understand the pipeline steps, the tools used, and the flow of data and artifacts throughout the process. For a illustrative overview, see \autoref{fig:model-service-pipeline}.
-
-\subsection{Pipeline Overview}
+\subsubsection{Pipeline Overview}
 
 The release pipeline is triggered when a new tag matching the pattern \texttt{v[0-9]+.[0-9]+.[0-9]+} is pushed to the repository. It consists of a single job:
 
@@ -200,16 +191,15 @@ The release pipeline is triggered when a new tag matching the pattern \texttt{v[
     \item \textbf{Build}: Builds the Docker image and pushes it to the GitHub Container Registry (GHCR).
 \end{enumerate}
 
-\subsection{Pipeline Steps}
+\subsubsection{Pipeline Steps}
 
-\subsubsection{Build (\texttt{build} job)}
+\paragraph{Build (\texttt{build} job)}
 
-\paragraph{Purpose}
-Build the Docker image for the \texttt{model-service} and push it to the GitHub Container Registry (GHCR).
+The purpose of building the Docker image for the \texttt{model-service} and push it to the GitHub Container Registry (GHCR).
 
 \paragraph{Implementation}
 \begin{itemize}
-    \item \textbf{Triggered}: When a tag matching the pattern \texttt{v[0-9]+.[0-9]+.[0-9]+} is pushed.
+    \item \textbf{Triggered}: When a tag matching the pattern \\\verb|{v[0-9]+.[0-9]+.[0-9]+}| is pushed.
     \item \textbf{Runs on}: \texttt{ubuntu-22.04}.
 \end{itemize}
 
@@ -253,7 +243,7 @@ Build the Docker image for the \texttt{model-service} and push it to the GitHub 
 %     \item The Docker image is pushed to the GitHub Container Registry with all the tags.
 % \end{itemize}
 
-\subsection{Artifacts and Data Flow}
+\subsubsection{Artifacts and Data Flow}
 
 \begin{enumerate}
     \item \textbf{Source Code}: Checked out from the repository.
@@ -262,13 +252,9 @@ Build the Docker image for the \texttt{model-service} and push it to the GitHub 
     \item \textbf{Published Image}: The final artifact, pushed to the GitHub Container Registry.
 \end{enumerate}
 
-\subsection{Tools Used}
+\subsubsection{Tools Used}
+Due to most tools being used in multiple pipelines, all tools are described in Section~\ref{sec:tools-used}.
 
-\begin{itemize}
-    \item \textbf{GitHub Actions}: CI/CD platform for running workflows.
-    \item \textbf{Docker}: Containerization platform for building and pushing images.
-    \item \textbf{GitHub Container Registry (GHCR)}: Registry for storing and managing Docker container images.
-\end{itemize}
 
 \begin{figure}[h!]
     \centering
@@ -292,3 +278,163 @@ Build the Docker image for the \texttt{model-service} and push it to the GitHub 
     \label{fig:model-service-pipeline}
 \end{figure}
 
+
+\subsection{Release Pipeline Documentation for \texttt{App} Container Image}
+As the release pipeline of the app container image is the same as the model-service release pipeline, please refer to Section~\ref{sec:release-model-service} for a detailed specification.
+
+\subsection{Release Pipeline Documentation for \texttt{Lib-Version} Container Image}
+\subsubsection{Pipeline Overview}
+The release pipeline is triggered when a new tag matching a specific pattern is pushed to the repository. The pipeline then runs a single job. 
+\begin{enumerate}
+    \item \textbf{Get Version from Metadata and Publish}: the poetry-dynamic-versioning package uses the git metadata to retrieve the latest git tag. Afterward, it uses this tag to push to PyPi. 
+\end{enumerate}
+\subsubsection{Pipeline Steps}
+\paragraph{Implementation}
+\begin{enumerate}
+    \item \textbf{Triggered}: when a new tag matching the pattern \\\verb|v[0-9]+.v[0-9]+.v[0-9]+| is pushed to the repository.
+    \item \textbf{Runs on}: latest version of Ubuntu available to GitHub. 
+\end{enumerate}
+\paragraph{Steps}
+These steps are visualized in Figure~\ref{fig:lib-version-pipeline}.
+\begin{enumerate}
+    \item \textbf{Checkout Repository}: uses \verb|actions/checkout@v4| to load the code from the repository. 
+    \item \textbf{Set up Python}: uses \verb|actions/setup-python@v2| to set up python. 
+    \item \textbf{Install Poetry and Dependencies}: uses pip through a shell command to install poetry. Afterward, the following dependencies are installed: setuptools, setuptools\_scm, wheel, twine and poetry-dynamic-versioning.
+    \item \textbf{Install Python Dependencies}: poetry is used to install Python dependencies. 
+    \item \textbf{Build Package}: Poetry is used to build the package. 
+    \item \textbf{Publish Package to PyPi}: Lastly, twine is used to upload the package to PyPi. 
+\end{enumerate}
+\subsubsection{Artifacts and Dataflow}
+\begin{enumerate}
+    \item \textbf{Source Code}: checked out from the repository. 
+    \item \textbf{Source Distribution}: the \verb|.tar.gz| pushed to PyPi. 
+    \item \textbf{Built Distribution}: the \verb|.whl| created by Poetry. 
+\end{enumerate}
+\subsubsection{Tools Used}
+Due to most tools being used in multiple pipelines, all tools are described in Section~\ref{sec:tools-used}.
+
+\begin{figure}[h]
+    \begin{tikzpicture}[node distance=1.5cm]
+        \node (start) [startstop] {Trigger (Tag Push)};
+        \node (checkout) [process, below of=start] {Checkout Repository};
+        \node (setup) [process, below of=checkout] {Set up Python 3.11};
+        \node (install) [process, below of=setup] {Install Poetry and Dependencies};
+        \node (install_dependencies) [process, below of=install] {Install Python Dependencies};
+        \node (build) [process, below of=install_dependencies] {Build Package};
+        \node (publish) [startstop, below of=build] {Publish Package to PyPI};
+        
+        \draw [arrow] (start) -- (checkout);
+        \draw [arrow] (checkout) -- (setup);
+        \draw [arrow] (setup) -- (install);
+        \draw [arrow] (install) -- (install_dependencies);
+        \draw [arrow] (install_dependencies) -- (build);
+        \draw [arrow] (build) -- (publish);
+    \end{tikzpicture}
+    \caption{Flowchart of \texttt{lib-version} Release Pipeline}
+    \label{fig:lib-version-pipeline}
+\end{figure}
+
+\subsection{Pipeline Documentation for \texttt{Model-Training}}
+\subsubsection{Pipeline Overview}
+This testing pipeline is triggered on any push to any branch, and when a pull request to the main branch is opened. On these triggers, the following jobs are executed: 
+\begin{enumerate}
+    \item \textbf{Unit Tests}: runs all the unit tests on macOS, Windows and a Linux system. Afterward, the test results are uploaded. 
+    \item \textbf{Integration Tests}: this job is only executed whenever a pull request to main is made. This job runs all the integration tests on different operating systems. 
+    \item \textbf{Publish Test Results}: this job downloads the test results and creates a badge to display the results. 
+\end{enumerate}
+\subsubsection{Pipeline Steps}
+\paragraph{Implementation}
+\begin{enumerate}
+    \item \textbf{Triggered}: on push and PR. 
+    \item \textbf{Runs on}: \verb|ubuntu-latest|, \verb|windows-latest| and \verb|macos-latest|.
+\end{enumerate}
+\paragraph{Steps - testing jobs} These steps are visualized in Figure~\ref{fig:model-training-testing-pipeline}. As the steps for both testing pipelines are very similar, they are only described once. The flag in the testing command decides which tests are executed, and the file locations are slightly different. 
+\begin{enumerate}
+    \item \textbf{Checkout Repository and Setup Python}: uses \\\verb|actions/checkout@v4| to check out the repository code. It references the specific push request by making use of the merge commit SHA. Then, based on which OS the job is executed on, \verb|actions/setup-python@v5| sets up the correct version of python. To find the correct version, the \verb|matrix.python| environment variable is used. 
+    \item \textbf{Install Poetry and Dependencies}: shell commands are used to interface with pip and poetry. Firstly, pip installs poetry, then, poetry installs the dependencies. 
+    \item \textbf{Create and Set Permissions for Test Directory} this step uses shell commands to set up the testing directory. 
+    \begin{enumerate}
+        \item \verb|chmod 777 ./tests| gives read-write permissions to all users. 
+        \item \verb|mkdir -p tests-results/unit-test/matrix.name| create a directory to store the results. The file is stored in the \verb|tests-results/integration-test/matrix.name| folder in the integration tests. 
+        \item \verb|chmod 777 tests-results/unit-test/matrix.name| gives read-write permissions to all users for this folder. 
+    \end{enumerate}
+    \item \textbf{Run Tests}: all tests are executed with the \verb|poetry run pytest| command. Some flags are set, 1) code coverage for the src directory is measured, 2) output location of coverage report is set to: \verb|--cov-report=xml:./tests/unittests.xml|, and 3) output format of test results is set to junit-xml and location is based on \verb|matrix.name| environment variable.  
+    \item \textbf{Upload Coverage to Codecov}: the code coverage is upload to Codecov using: \verb|codecov/codecov-action@v4| with the token \verb|secrets.CODECOV_TOKEN|.
+    \item \textbf{Upload Test Results} the test results are uploaded to GitHub using the action \verb|actions/upload-artifact@v4|. 
+\end{enumerate}
+\paragraph{Steps - publish results job} These steps are visualized in Figure~\ref{fig:model-training-publish}.
+\begin{enumerate}
+    \item \textbf{Download Artifacts} uses \verb|actions/download-artifact@v4| to download the results of the tests. 
+    \item \textbf{Publish Test Results}: the downloaded test results are published using \verb|EnricoMi/publish-unit-test-result-action@v2|. This is a mature GitHub Action that publishes the results nicely in pull requests. 
+    \item \textbf{Set Badge Color}: a shell command is used to retrieve the test results and set the badge color. The badge will be green, if all tests pass. 
+    \item \textbf{Create Badge}: uses the GitHub Action \verb|emibcn/badge-action@|. to create the badge. 
+    \item \textbf{Upload Badge to Gist}: uploads the created badge to Gist using the GitHub Action \verb|andymckay/append-gist-action@|.
+\end{enumerate}
+\subsubsection{Artifacts and Dataflow}
+\begin{enumerate}
+    \item \textbf{Code coverage}: the percentage of lines in the \verb|src| directory covered by the tests. 
+    \item \textbf{Test Results}: the results of the unit and integration (e.g. pass/fail/crash) tests on the different operating systems. 
+    \item \textbf{GitHub Badge}: the badge created from the test results (Figure~\ref{fig:badge}). 
+    \item \textbf{Matrix}: a matrix specifying different operating systems and their versions. 
+\end{enumerate}
+
+
+
+\subsection{Tools Used}\label{sec:tools-used}
+\begin{enumerate}
+    \item \textbf{GitHub Actions}: CI/CD platform for running workflows. 
+    \item \textbf{Pip}: The default package installer for Python, enabling users to install and manage software packages from the Python Package Index (PyPI).
+    \item \textbf{Poetry}: A Python dependency management tool that simplifies project setup, dependency resolution, and packaging.
+    \item \textbf{PyTest}: A mature Python testing framework. 
+    \item \textbf{Codecov}:  A code coverage analysis tool that integrates with CI/CD workflows to provide reports and insights on test coverage.
+    \item \textbf{GitHub Badge}: A visual indicator that provides real-time updates to indicate project status. 
+    \item \textbf{Twine}: a utility for publishing Python packages to the Python Package Index (PyPI).
+    \item \textbf{Poetry dynamic versioning package}: a tool that does dynamic package versioning.
+    \item \href{https://GitHub.com/marketplace/actions/GitHub-tag-bump}{\textbf{anothrNick/GitHub-tag-action}: Action for tagging releases.}
+    \item \href{https://github.com/marketplace/actions/badge-action}{\textbf{emibcn/badge-action}} an action for generating a badge. 
+    \item \href{https://github.com/marketplace/actions/publish-test-results}{\textbf{EnricoMi/publish-unit-test-result-action}} publishes test results to GitHub repository. 
+    \item \href{https://github.com/marketplace/actions/codecov}{\textbf{codecov/codecov-action}} report code coverage.
+    \item \href{https://github.com/marketplace/actions/append-to-gist}{\textbf{andymckay/append-gist-action}} appends results to gist. 
+    \item \textbf{Basic GitHub Actions}: \textit{checkout}, \textit{setup-python}, \textit{download-artifact} and \textit{upload-artifact}.
+\end{enumerate}
+
+    
+\begin{figure}[hb!]
+    \begin{tikzpicture}[node distance=1.5cm]
+        \node (start) [startstop] {Trigger (PR and/or push)};
+        \node (checkout) [process, below of=start] {Checkout Repository and Setup Python};
+        \node (setup) [process, below of=checkout] {Install Poetry and Dependencies};
+        \node (install) [process, below of=setup] {Create and Set Permissions For Test Directory};
+        \node (install_dependencies) [process, below of=install] {Run Tests (Integration or Unit)};
+        \node (build) [process, below of=install_dependencies] {Upload Coverage to Codecov};
+        \node (publish) [startstop, below of=build] {Upload Test Results};
+        
+        \draw [arrow] (start) -- (checkout);
+        \draw [arrow] (checkout) -- (setup);
+        \draw [arrow] (setup) -- (install);
+        \draw [arrow] (install) -- (install_dependencies);
+        \draw [arrow] (install_dependencies) -- (build);
+        \draw [arrow] (build) -- (publish);
+    \end{tikzpicture}
+    \caption{Flowchart of \texttt{model-training} Testing Jobs}
+    \label{fig:model-training-testing-pipeline}
+\end{figure}
+
+\begin{figure}[hb!]
+    \begin{tikzpicture}[node distance=1.5cm]
+        \node (start) [startstop] {Trigger (PR or push)};
+        \node (checkout) [process, below of=start] {Download Artifacts};
+        \node (setup) [process, below of=checkout] {Publish Test Results};
+        \node (install) [process, below of=setup] {Set Badge Color};
+        \node (install_dependencies) [process, below of=install] {Create Badge};
+        \node (build) [startstop, below of=install_dependencies] {Upload Badge to Gist};
+        
+        \draw [arrow] (start) -- (checkout);
+        \draw [arrow] (checkout) -- (setup);
+        \draw [arrow] (setup) -- (install);
+        \draw [arrow] (install) -- (install_dependencies);
+        \draw [arrow] (install_dependencies) -- (build);
+    \end{tikzpicture}
+    \caption{Flowchart of \texttt{model-training} Test Publishing Job}
+    \label{fig:model-training-publish}
+\end{figure}
