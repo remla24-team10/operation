@@ -53,14 +53,22 @@ Please wait a bit before making a request to the server, the server downloads th
 
 ### prometheus (Istio)
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
+Additionally the prometheus stack should be installed through helm:
+```
+helm repo add myprom https://prometheus-community.github.io/helm-charts
+helm install myprom prom-repo/kube-prometheus-stack
+```
+After reapplying operation-manifests.yaml the prometheus dashboard can be ran using:
 ```
 istioctl dashboard prometheus
 ```
 The custom metrics which we collect include:
 ```
 num_requests - Reflects the number of times a page has been served.
-average_probability - Reflects the average response value of the model
-average_phishing - Reflects the ratio of phishing among all requests
+average_probability - Reflects the average response value of the model.
+average_phishing - Reflects the ratio of phishing among all requests.
+model_accuracy - Reports the accuracy of the model over all labaled requests.
+
 ```
 
 ### prometheus (OLD)

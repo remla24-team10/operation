@@ -128,7 +128,7 @@ Approved PR: https://github.com/janvandermeulen/REMLA-group10/pull/2
   - https://github.com/remla24-team10/model-service/pull/2 
   - https://github.com/remla24-team10/operation/pull/4
 
-A6:
+# A6:
 -- Shayan Ramezani --
 - Created PR: 
   - https://github.com/remla24-team10/operation/pull/15
