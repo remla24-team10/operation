@@ -85,7 +85,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -117,7 +117,7 @@
         "x": 0,
         "y": 0
       },
-      "id": 3,
+      "id": 4,
       "options": {
         "legend": {
           "calcs": [],
@@ -138,17 +138,17 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "average_probability",
+          "expr": "model_accuracy",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "Average prediction probability",
+          "legendFormat": "Model Accuracy: {{pod}}",
           "range": true,
           "refId": "A",
           "useBackend": false
         }
       ],
-      "title": "Panel Title",
+      "title": "Model Accuracy",
       "type": "timeseries"
     },
     {
@@ -184,7 +184,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -216,6 +216,105 @@
         "x": 0,
         "y": 8
       },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "average_probability",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "Average prediction probability: {{pod}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Prediction Probability",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
       "id": 2,
       "options": {
         "legend": {
@@ -241,7 +340,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "Phishing rate",
+          "legendFormat": "Phishing rate: {{pod}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -283,7 +382,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -297,8 +396,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -313,7 +411,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "id": 1,
       "options": {
@@ -340,7 +438,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "Page Requests: {{page}}",
+          "legendFormat": "Page Requests: {{page}} {{pod}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -364,6 +462,6 @@
   "timezone": "browser",
   "title": "AppMonitor",
   "uid": "ddme2aghko0e8b",
-  "version": 5,
+  "version": 9,
   "weekStart": ""
 }
