@@ -25,6 +25,8 @@ A readable PDF version of the report can be found [here](https://github.com/reml
 
 The project can be ran using either [Docker-compose](https://docs.docker.com/compose/) or [Kubernetes](https://kubernetes.io) ([Minikube](https://minikube.sigs.k8s.io/docs/)). [Vagrant](https://www.vagrantup.com) currently creates VM's with some basic ansible playbooks but it currently is not functional yet.
 
+Note: Private network connection is recommended (public networks like TUDelft might not work)
+
 ### 💻 With Vagrant
 Th VM's can be set up by running:
 ```
