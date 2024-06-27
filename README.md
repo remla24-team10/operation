@@ -10,6 +10,14 @@ This `README.md` file contains the architecture, installations and comments for 
 - [lib-ml](https://github.com/remla24-team10/lib-ml) contains the pre-processing logic for data that is used for training or queries
 - [model-training](https://github.com/remla24-team10/model-training) contains the ML training pipeline and is dependent on lib-ml
 
+## 📝 Code overview:
+
+Overview of useful files from this repository:
+- `docker-compose.yaml`: Contains the configuration for Docker-compose
+- `operation-manifests.yaml`: Contains the configuration for Kubernetes
+- `Vagrantfile`: Contains the configuration for Vagrant
+
+
 ## 📄 Report
 
 A readable pdf version of the report can be found [here](https://github.com/remla24-team10/operation/blob/main/report/report_group10.pdf) 
