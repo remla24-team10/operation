@@ -1,23 +1,31 @@
-# Operation
+# 🚀 Operation
 
 This is the main repository of [remla24-team10](https://github.com/remla24-team10)
-The README file contains the architecture, installations and comments for each assignments.
+This `README.md` file contains the architecture, installations and comments for each assignments.
 
-## Architecture
+## 🏗️ Architecture
 - [app](https://github.com/remla24-team10/app) is the application that communicates with model-service and depends on lib-version 
 - [lib-version](https://github.com/remla24-team10/lib-version) is version-aware library that can can be asked for the version of the library
 - [model-service](https://github.com/remla24-team10/model-service) is a wrapper service for the released ML mod and is dependent on lib-ml
 - [lib-ml](https://github.com/remla24-team10/lib-ml) contains the pre-processing logic for data that is used for training or queries
 - [model-training](https://github.com/remla24-team10/model-training) contains the ML training pipeline and is dependent on lib-ml
 
-## Report
-A readable pdf version of the report can be found in the report folder. 
+## 📝 Code overview:
 
-## Installation
+Overview of useful files from this repository:
+- `docker-compose.yaml`: Contains the configuration for Docker-compose
+- `operation-manifests.yaml`: Contains the configuration for Kubernetes
+- `Vagrantfile`: Contains the configuration for Vagrant
 
-The project can be ran using either docker compose or kubernetes (minikube). Vagrant currently creates VM's with some basic ansible playbooks but it may not be fully functional yet. These steps assume that docker is installed and running. Docker authentication is also required (docker login).
+## 📄 Report
 
-### With Vagrant
+A readable PDF version of the report can be found [here](https://github.com/remla24-team10/operation/blob/main/report/report_group10.pdf) 
+
+## 🛠️ Installation
+
+The project can be ran using either [Docker-compose](https://docs.docker.com/compose/) or [Kubernetes](https://kubernetes.io) ([Minikube](https://minikube.sigs.k8s.io/docs/)). [Vagrant](https://www.vagrantup.com) currently creates VM's with some basic ansible playbooks but it currently is not functional yet.
+
+### 💻 With Vagrant
 Th VM's can be set up by running:
 ```
 vagrant up
@@ -29,17 +37,16 @@ vagrant ssh worker1
 vagrant ssh worker2
 ```
 
-### With docker compose
+### 🐳 With Docker compose
 Run docker-compose:
 ```
 docker compose up
 ```
-The front-end application should now be available at localhost:5000.
-### With kubernetes and istio (minikube)
-This project requires istio to be installed [Istio Download](https://istio.io/latest/docs/setup/getting-started/#download).
+The front-end application should now be available at [localhost:5000](http://localhost:5000).
+### ☸️ With Kubernetes and Istio (Minikube)
+This project requires Docker, Minikube, and [Istio](https://istio.io) to be installed.
 
-Then run the project using minikube run the following commands:
-Run:
+Then run the project using Minikube run the following commands:
 ```
 minikube start
 istioctl install
@@ -47,11 +54,24 @@ kubectl apply -f [istio install location]/samples/addons/prometheus.yaml
 kubectl apply -f operation-manifests.yaml
 minikube tunnel
 ```
-The project should now be available at localhost (no port) through ingress. 
-Please wait a bit before making a request to the server, the server downloads the model on deployment which takes a few seconds.
+The project should now be available at [localhost](http://localhost) (no port) through ingress. 
+Please wait a bit before making a request to the server, the server downloads the model on deployment which takes a few minutes.
 
-### prometheus (Istio)
+### 📊 Prometheus (Istio)
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
+```
+istioctl dashboard prometheus
+```
+The custom metrics which we collect include:
+```
+num_requests - Reflects the number of times a page has been served.
+average_probability - Reflects the average response value of the model
+average_phishing - Reflects the ratio of phishing among all requests
+```
+
+### 📊 Prometheus (OLD)
+The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
+
 Additionally the prometheus stack should be installed through helm:
 ```
 helm repo add myprom https://prometheus-community.github.io/helm-charts
@@ -70,7 +90,7 @@ model_accuracy - Reports the accuracy of the model over all labaled requests.
 
 ```
 
-### grafana
+### 📈 Grafana
 Grafana can also be used for further visualisation of the metrics, to run grafana prometheus should be active.
 Run:
 ```
@@ -87,7 +107,7 @@ The dashboard can now be imported by navigating to dashboards and importing the 
 [//]: # (# This README should introduce your highlevel architecture and that links to the corresponding repositories, so visitors can easily understand your project and find all relevant information. )
 
 
-## Comments for A1
+## 💬 Comments for A1
 ### Task 1: Organise your training pipeline following machine learning project best practices.
 Pull request: https://github.com/janvandermeulen/REMLA-group10/pull/1 and https://github.com/janvandermeulen/REMLA-group10/pull/2 
 Contributors: Shayan Ramezani and Jan van der Meulen
