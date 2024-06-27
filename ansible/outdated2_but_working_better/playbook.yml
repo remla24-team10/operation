@@ -5,6 +5,8 @@
 - name: Set up the controller node
   hosts: controllers
   become: yes
+  become_user: sudo
+  become_method: sudo
   roles:
     - k8s-controller
 
