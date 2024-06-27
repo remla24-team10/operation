@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/remla24-team10/app:0.0.1
+        image: ghcr.io/remla24-team10/app:0.0.3
         ports:
         - containerPort: 5000
         env:
@@ -62,7 +62,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/remla24-team10/app:0.0.2
+        image: ghcr.io/remla24-team10/app:0.0.4
         ports:
         - containerPort: 5000
         env:
@@ -106,7 +106,7 @@ spec:
     spec:
       containers:
       - name: model-service
-        image: ghcr.io/remla24-team10/model-service:latest
+        image: ghcr.io/remla24-team10/model-service:0.0.1
         ports:
         - containerPort: 8080
         env:
@@ -135,7 +135,7 @@ spec:
     spec:
       containers:
       - name: model-service
-        image: ghcr.io/remla24-team10/model-service:latest
+        image: ghcr.io/remla24-team10/model-service:0.0.2
         ports:
         - containerPort: 8080
         env:
@@ -206,11 +206,11 @@ spec:
     - destination:
         host: app-service
         subset: v1
-      weight: 50
+      weight: 90
     - destination:
         host: app-service
         subset: v2
-      weight: 50
+      weight: 10
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule

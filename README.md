@@ -15,7 +15,7 @@ A readable pdf version of the report can be found in the report folder.
 
 ## Installation
 
-The project can be ran using either docker compose or kubernetes (minikube). Vagrant currently creates VM's with some basic ansible playbooks but it currently is not functional yet.
+The project can be ran using either docker compose or kubernetes (minikube). Vagrant currently creates VM's with some basic ansible playbooks but it may not be fully functional yet. These steps assume that docker is installed and running. Docker authentication is also required (docker login).
 
 ### With Vagrant
 Th VM's can be set up by running:
@@ -44,7 +44,6 @@ Run:
 minikube start
 istioctl install
 kubectl apply -f [istio install location]/samples/addons/prometheus.yaml
-kubectl label ns operation istio-injection=enabled
 kubectl apply -f operation-manifests.yaml
 minikube tunnel
 ```
@@ -53,18 +52,6 @@ Please wait a bit before making a request to the server, the server downloads th
 
 ### prometheus (Istio)
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
-```
-istioctl dashboard prometheus
-```
-The custom metrics which we collect include:
-```
-num_requests - Reflects the number of times a page has been served.
-average_probability - Reflects the average response value of the model
-average_phishing - Reflects the ratio of phishing among all requests
-```
-
-### prometheus (OLD)
-The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
 Additionally the prometheus stack should be installed through helm:
 ```
 helm repo add myprom https://prometheus-community.github.io/helm-charts
@@ -72,21 +59,27 @@ helm install myprom prom-repo/kube-prometheus-stack
 ```
 After reapplying operation-manifests.yaml the prometheus dashboard can be ran using:
 ```
-kubectl patch svc myprom-kube-prometheus-sta-prometheus -p '{"spec": {"type": "NodePort"}}'
-minikube service myprom-kube-prometheus-sta-prometheus --url
+istioctl dashboard prometheus
+```
+The custom metrics which we collect include:
+```
+num_requests - Reflects the number of times a page has been served.
+average_probability - Reflects the average response value of the model.
+average_phishing - Reflects the ratio of phishing among all requests.
+model_accuracy - Reports the accuracy of the model over all labaled requests.
+
 ```
 
 ### grafana
 Grafana can also be used for further visualisation of the metrics, to run grafana prometheus should be active.
 Run:
 ```
-kubectl patch svc myprom-grafana -p '{"spec": {"type": "NodePort"}}'
 minikube service myprom-grafana --url
 ```
 Afterwards login to the dashboard using the default credentials:
 ```
-admin
-prom-operator
+Username: admin
+Password: prom-operator
 ```
 The dashboard can now be imported by navigating to dashboards and importing the grafana.json file provided in the repository.
 
