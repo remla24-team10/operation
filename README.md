@@ -17,7 +17,6 @@ Overview of useful files from this repository:
 - `operation-manifests.yaml`: Contains the configuration for Kubernetes
 - `Vagrantfile`: Contains the configuration for Vagrant
 
-
 ## 📄 Report
 
 A readable PDF version of the report can be found [here](https://github.com/remla24-team10/operation/blob/main/report/report_group10.pdf) 
@@ -52,7 +51,6 @@ Then run the project using Minikube run the following commands:
 minikube start
 istioctl install
 kubectl apply -f [istio install location]/samples/addons/prometheus.yaml
-kubectl label ns operation istio-injection=enabled
 kubectl apply -f operation-manifests.yaml
 minikube tunnel
 ```
@@ -73,6 +71,7 @@ average_phishing - Reflects the ratio of phishing among all requests
 
 ### 📊 Prometheus (OLD)
 The project supports dashboards for various metrics utilising prometheus, for this to work the project has to be first ran using minikube.
+
 Additionally the prometheus stack should be installed through helm:
 ```
 helm repo add myprom https://prometheus-community.github.io/helm-charts
@@ -80,21 +79,27 @@ helm install myprom prom-repo/kube-prometheus-stack
 ```
 After reapplying operation-manifests.yaml the prometheus dashboard can be ran using:
 ```
-kubectl patch svc myprom-kube-prometheus-sta-prometheus -p '{"spec": {"type": "NodePort"}}'
-minikube service myprom-kube-prometheus-sta-prometheus --url
+istioctl dashboard prometheus
+```
+The custom metrics which we collect include:
+```
+num_requests - Reflects the number of times a page has been served.
+average_probability - Reflects the average response value of the model.
+average_phishing - Reflects the ratio of phishing among all requests.
+model_accuracy - Reports the accuracy of the model over all labaled requests.
+
 ```
 
 ### 📈 Grafana
 Grafana can also be used for further visualisation of the metrics, to run grafana prometheus should be active.
 Run:
 ```
-kubectl patch svc myprom-grafana -p '{"spec": {"type": "NodePort"}}'
 minikube service myprom-grafana --url
 ```
 Afterwards login to the dashboard using the default credentials:
 ```
-admin
-prom-operator
+Username: admin
+Password: prom-operator
 ```
 The dashboard can now be imported by navigating to dashboards and importing the grafana.json file provided in the repository.
 
