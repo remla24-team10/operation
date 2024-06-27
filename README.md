@@ -20,7 +20,7 @@ Overview of useful files from this repository:
 
 ## 📄 Report
 
-A readable pdf version of the report can be found [here](https://github.com/remla24-team10/operation/blob/main/report/report_group10.pdf) 
+A readable PDF version of the report can be found [here](https://github.com/remla24-team10/operation/blob/main/report/report_group10.pdf) 
 
 ## 🛠️ Installation
 
@@ -45,9 +45,9 @@ docker compose up
 ```
 The front-end application should now be available at [localhost:5000](http://localhost:5000).
 ### ☸️ With Kubernetes and Istio (Minikube)
-This project requires docker, minkube, and [istio](https://istio.io) to be installed.
+This project requires Docker, Minikube, and [Istio](https://istio.io) to be installed.
 
-Then run the project using minikube run the following commands:
+Then run the project using Minikube run the following commands:
 ```
 minikube start
 istioctl install
