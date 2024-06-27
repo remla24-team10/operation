@@ -1,0 +1,196 @@
+
+- name: Include Docker setup tasks
+  include_tasks: ../docker.yml
+
+- name: Check if k3d is installed
+  shell: which k3d
+  register: k3d_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install k3d
+  shell: curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+  when: k3d_installed.stdout == ""
+
+- name: Check if k3d cluster exists
+  shell: k3d cluster list
+  register: k3d_cluster_list
+  changed_when: false
+  failed_when: false
+
+- name: Create k3d cluster
+  shell: |
+    k3d cluster create mycluster \
+    --agents 2 \
+    --api-port 6443 \
+    --port 80:80@loadbalancer \
+    --k3s-arg "--disable=traefik@server:0"
+  when: "'mycluster' not in k3d_cluster_list.stdout"
+
+- name: Install kubectl
+  get_url:
+    url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/kubectl
+    mode: '0755'
+  vars:
+    kubectl_version: "{{ lookup('url', 'https://dl.k8s.io/release/stable.txt', split_lines=True) }}"
+  become: yes
+
+- name: Ensure .kube directory exists
+  file:
+    path: "/root/.kube"
+    state: directory
+    mode: '0755'
+  become: yes  # This ensures the task is run with root privileges
+
+- name: Correct permissions for .kube directory
+  file:
+    path: "/root/.kube"
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+  become: yes
+
+- name: Get kubeconfig from k3d
+  command: k3d kubeconfig write mycluster
+  register: kubeconfig_path
+  changed_when: false
+
+- name: Set KUBECONFIG environment variable
+  lineinfile:
+    path: "/home/vagrant/.bashrc"  # Make sure to point to the correct home directory
+    line: "export KUBECONFIG=/home/vagrant/.kube/config"  # Adjust the path as necessary
+    create: yes
+  become_user: root
+  become: yes
+
+- name: Install Helm
+  get_url:
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    dest: /tmp/get_helm.sh
+    mode: '0755'
+  become: yes
+
+- name: Execute Helm installation script
+  command: /tmp/get_helm.sh
+  args:
+    creates: /usr/local/bin/helm
+
+- name: Add Helm repositories
+  shell: |
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo add grafana https://grafana.github.io/helm-charts
+    helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+    helm repo update
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path.stdout }}"
+
+- name: Install or Upgrade Grafana
+  shell: |
+    if helm ls --namespace monitoring | grep grafana; then
+      helm upgrade grafana grafana/grafana --namespace monitoring
+    else
+      helm install grafana grafana/grafana --namespace monitoring --create-namespace
+    fi
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path.stdout }}"
+
+- name: Install or Upgrade Kubernetes Dashboard
+  shell: |
+    if helm ls --namespace kube-system | grep kubernetes-dashboard; then
+      helm upgrade kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system
+    else
+      helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system --create-namespace
+    fi
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path.stdout }}"
+
+- name: Install or Upgrade Prometheus
+  shell: |
+    if helm ls --namespace monitoring | grep prometheus; then
+      helm upgrade prometheus prometheus-community/prometheus --version 25.12.0 --namespace monitoring
+    else
+      helm install prometheus prometheus-community/prometheus --version 25.12.0 --namespace monitoring --create-namespace
+    fi
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path.stdout }}"
+
+
+# # controller main
+# - include_tasks: ../docker.yml
+
+# - name: Install k3d on controller
+#   shell: |
+#     curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+
+# - name: Create k3d cluster
+#   become: yes
+#   shell: |
+#     k3d cluster create mycluster --agents 2 --api-port 6443 --port 80:80@loadbalancer --k3s-arg "--disable=traefik@server:0"
+#   environment:
+#     K3S_NODE_NAME: "controller"
+
+
+# - name: Ensure k3d cluster is running
+#   shell: |
+#     k3d cluster list
+#   register: k3d_status
+
+# - name: Set k3d cluster fact
+#   set_fact:
+#     k3d_status: "{{ k3d_status.stdout }}"
+
+
+# - name: install kubectl
+#   become: yes
+#   shell: |
+#     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+# - name: Create .kube directory
+#   file:
+#     path: ~/.kube
+#     state: directory
+#     mode: '0755'
+
+# - name: Get kubeconfig
+#   shell: |
+#     mkdir ~/.kube
+#     mkdir ~/.kube/config
+#     k3d kubeconfig get mycluster > ~/.kube/config
+#   register: kubeconfig
+
+# # include another yml here
+# - include_tasks: ./helm.yml
+
+# # - name: Add Helm repositories
+# #   shell: |
+# #     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# #     helm repo add grafana https://grafana.github.io/helm-charts
+# #     helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+# #     helm repo update
+
+# # - name: Install Prometheus
+# #   shell: |
+# #     helm install prometheus prometheus-community/prometheus --version 25.12.0 --namespace monitoring --create-namespace
+
+# # - name: Install Grafana
+# #   shell: |
+# #     helm install grafana grafana/grafana --namespace monitoring --create-namespace
+    
+# # - name: Install Kubernetes Dashboard
+# #   shell: |
+# #     helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --namespace kube-system --create-namespace
+    
+# # - name: Display kubeconfig for local use
+# #   shell: cat ~/.kube/config
+# #   register: local_kubeconfig
+# #   delegate_to: localhost
+# #   run_once: true
+
+# # - debug:
+# #     msg: "{{ local_kubeconfig.stdout }}"
+      
+    
+ 
